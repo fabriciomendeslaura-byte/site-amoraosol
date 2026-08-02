@@ -664,10 +664,81 @@ h1, h2, h3, h4 { font-family: var(--display); font-weight: 400; line-height: 1.0
    auto-fit + minmax = grade responsiva sem media query: o navegador encaixa
    quantas colunas couberem, com no mínimo 250px cada.
    --------------------------------------------------------------------------- */
-.grade {
+/* ---------------------------------------------------------------------------
+   VITRINE — produtos lado a lado, com rolagem horizontal
+   ---------------------------------------------------------------------------
+   Substitui a grade que empilhava as peças em várias linhas. A visitante vê
+   mais produto sem rolar a página, e arrastar de lado é o gesto natural de
+   quem procura roupa — é assim que se olha uma arara.
+   --------------------------------------------------------------------------- */
+.vitrine {
+  position: relative;
+  /* Sangra até a borda da tela: a vitrine ignora a margem da seção e o último
+     card fica "cortado" pela lateral, sinalizando que tem mais coisa adiante. */
+  margin-inline: calc(var(--margem) * -1);
+}
+
+.vitrine__trilho {
+  display: flex;
+  gap: clamp(.9rem, 1.8vw, 1.6rem);
+  overflow-x: auto;
+  padding: .5rem var(--margem) 1.5rem;
+
+  /* scroll-snap faz a rolagem "encaixar" no início de cada card em vez de
+     parar no meio de um produto. É o que dá a sensação de app nativo. */
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+
+  /* Esconde a barra de rolagem: as setas e o card cortado já dizem que rola.
+     Nos navegadores WebKit exige a pseudo-classe própria. */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.vitrine__trilho::-webkit-scrollbar { display: none; }
+
+/* Largura fixa do card: `flex: 0 0` impede que ele encolha ou estique para
+   preencher a linha — cada peça mantém o mesmo tamanho, seja qual for a
+   quantidade na vitrine. */
+.vitrine__trilho > .produto {
+  flex: 0 0 clamp(228px, 24vw, 290px);
+  scroll-snap-align: start;
+}
+
+/* --- Setas de navegação --- */
+.vitrine__seta {
+  position: absolute;
+  top: 32%;                       /* alinhada com a foto, não com o card todo */
+  z-index: 3;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: clamp(1.2rem, 2.4vw, 2.2rem);
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--superficie, rgba(255,255,255,.9));
+  border: 1px solid var(--linha);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--texto);
+  box-shadow: 0 6px 20px rgba(0,0,0,.18);
+  transition: background .3s, transform .3s var(--suave), opacity .3s;
+}
+.vitrine__seta svg { width: 20px; height: 20px; }
+.vitrine__seta:hover { background: var(--realce); color: var(--areia); transform: scale(1.08); }
+
+.vitrine__seta--ant  { left:  calc(var(--margem) - 23px); transform: rotate(180deg); }
+.vitrine__seta--prox { right: calc(var(--margem) - 23px); }
+.vitrine__seta--ant:hover { transform: rotate(180deg) scale(1.08); }
+
+/* Some quando não há mais para onde rolar daquele lado (classe posta pelo JS).
+   Seta que não faz nada é ruído — e frustra quem clica. */
+.vitrine__seta[disabled] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Sem mouse (celular/tablet) as setas somem: ali o gesto é arrastar. */
+@media (hover: none) {
+  .vitrine__seta { display: none; }
 }
 
 /* O card usa os tokens da seção, então funciona igual no fundo claro da
@@ -757,20 +828,51 @@ h1, h2, h3, h4 { font-family: var(--display); font-weight: 400; line-height: 1.0
 .produto__preco  { font-family: var(--display); font-size: 1.5rem; letter-spacing: .01em; color: var(--texto); }
 .produto__parcela{ font-size: .72rem; color: var(--texto-suave); }
 
-/* CTA do card, na cor do WhatsApp: quem olha já sabe onde vai cair */
+/* ---------------------------------------------------------------------------
+   BOTÃO COMPRAR DO CARD
+   Verde do WhatsApp de propósito: a cor já diz para onde o clique leva, antes
+   mesmo de ler o texto. Largura total do card, porque num carrossel o botão
+   é o alvo final — quanto maior a área, menos toque errado no celular.
+   --------------------------------------------------------------------------- */
 .produto__cta {
-  display: flex; align-items: center; justify-content: center; gap: .5rem;
-  padding: .85rem;
+  position: relative;
+  display: flex; align-items: center; justify-content: center; gap: .55rem;
+  padding: .95rem;
   background: var(--zap);
   color: #06301A;
   border-radius: 999px;
-  font-size: .72rem; font-weight: 500; letter-spacing: .14em; text-transform: uppercase;
-  transition: background .3s, transform .3s var(--suave), box-shadow .3s;
+  font-size: .72rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
+  overflow: hidden;                 /* segura o brilho dentro da pílula */
+  box-shadow: 0 4px 14px rgba(37, 211, 102, .22);
+  transition: background .3s, transform .3s var(--suave), box-shadow .35s;
 }
+
+/* Brilho que atravessa o botão no hover — mesma assinatura de movimento dos
+   botões grandes do site, para tudo parecer a mesma família. */
+.produto__cta::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,.45) 50%, transparent 65%);
+  transform: translateX(-120%);
+  transition: transform .7s var(--suave);
+}
+.produto__cta:hover::after { transform: translateX(120%); }
+
 .produto__cta:hover {
   background: #2EE873;
   transform: translateY(-2px);
-  box-shadow: 0 10px 26px rgba(37,211,102,.34);
+  box-shadow: 0 12px 30px rgba(37, 211, 102, .4);
+}
+/* Afunda ao ser pressionado: devolve a sensação física do clique/toque */
+.produto__cta:active { transform: translateY(0) scale(.98); }
+
+.produto__cta .ico { width: 1.15rem; height: 1.15rem; }
+
+/* O card inteiro reage ao passar o mouse, não só o botão — o cartão todo
+   parece um alvo só, e o botão "acende" antes de a pessoa chegar nele. */
+.produto:hover .produto__cta {
+  box-shadow: 0 10px 26px rgba(37, 211, 102, .34);
 }
 
 .colecao__saida {

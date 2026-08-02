@@ -108,7 +108,58 @@ document.querySelectorAll('.produto__opcoes').forEach((grupo) => {
 
 
 /* ============================================================================
-   3. HERO — troca automática das fotos (o "efeito vídeo")
+   3. VITRINE — setas que rolam os produtos na horizontal
+   ----------------------------------------------------------------------------
+   Cada vitrine se configura sozinha a partir do HTML (data-vitrine), então
+   basta marcar um bloco novo com esses atributos que ele já funciona — não
+   existe lista de vitrines no JS para manter em sincronia.
+   ============================================================================ */
+document.querySelectorAll('[data-vitrine]').forEach((vitrine) => {
+  const trilho = vitrine.querySelector('[data-vitrine-trilho]');
+  const ant    = vitrine.querySelector('[data-vitrine-ant]');
+  const prox   = vitrine.querySelector('[data-vitrine-prox]');
+  if (!trilho) return;
+
+  // Rola de card em card: medimos a largura real de um produto (mais o gap)
+  // em vez de chutar pixels. Se o card mudar de tamanho, o passo acompanha.
+  function passo() {
+    const card = trilho.querySelector('.produto');
+    if (!card) return trilho.clientWidth;
+    const gap = parseFloat(getComputedStyle(trilho).columnGap) || 0;
+    return card.offsetWidth + gap;
+  }
+
+  function rolar(direcao) {
+    trilho.scrollBy({ left: passo() * direcao, behavior: 'smooth' });
+  }
+
+  ant?.addEventListener('click', () => rolar(-1));
+  prox?.addEventListener('click', () => rolar(1));
+
+  // Liga/desliga as setas conforme a posição. Sem isso, ficariam setas ativas
+  // apontando para o nada nas duas pontas da vitrine.
+  function atualizarSetas() {
+    const fim = trilho.scrollWidth - trilho.clientWidth;
+    // A folga de 4px absorve o arredondamento de subpixel do navegador:
+    // sem ela, a seta final às vezes nunca desaparece.
+    if (ant)  ant.disabled  = trilho.scrollLeft <= 4;
+    if (prox) prox.disabled = trilho.scrollLeft >= fim - 4;
+  }
+
+  trilho.addEventListener('scroll', atualizarSetas, { passive: true });
+  window.addEventListener('resize', atualizarSetas);
+
+  // As fotos são lazy: no primeiro cálculo o trilho ainda não tem a largura
+  // final e as setas ficam no estado errado. ResizeObserver avisa sempre que o
+  // tamanho muda de verdade — inclusive quando cada imagem termina de carregar.
+  new ResizeObserver(atualizarSetas).observe(trilho);
+
+  atualizarSetas();
+});
+
+
+/* ============================================================================
+   4. HERO — troca automática das fotos (o "efeito vídeo")
    ----------------------------------------------------------------------------
    A cada 6s trocamos qual foto tem a classe .is-active. O CSS cuida do
    crossfade e do zoom lento; o JS só diz "agora é a vez dessa".
@@ -153,7 +204,7 @@ if (slides.length > 1) iniciarCarrossel();
 
 
 /* ============================================================================
-   4. CABEÇALHO E BARRA DO WHATSAPP reagindo à rolagem
+   5. CABEÇALHO E BOTÃO DO WHATSAPP reagindo à rolagem
    ============================================================================ */
 const cabecalho = document.getElementById('cabecalho');
 const zapFab    = document.querySelector('.zap-fab');
@@ -176,7 +227,7 @@ aoRolar();   // roda uma vez no carregamento (caso a página abra já rolada)
 
 
 /* ============================================================================
-   5. MENU MOBILE
+   6. MENU MOBILE
    ============================================================================ */
 const menuBtn = document.getElementById('menu-btn');
 const menu    = document.getElementById('menu');
@@ -196,7 +247,7 @@ menu.querySelectorAll('a').forEach((link) => link.addEventListener('click', () =
 
 
 /* ============================================================================
-   6. ANIMAÇÃO DE ENTRADA DOS ELEMENTOS
+   7. ANIMAÇÃO DE ENTRADA DOS ELEMENTOS
    ----------------------------------------------------------------------------
    IntersectionObserver é o jeito moderno de saber "esse elemento apareceu na
    tela?". O jeito antigo era calcular posições a cada evento de scroll — pesado
@@ -222,7 +273,7 @@ document.querySelectorAll('.revelar').forEach((el) => observador.observe(el));
 
 
 /* ============================================================================
-   7. PARALLAX DO BANNER
+   8. PARALLAX DO BANNER
    ----------------------------------------------------------------------------
    A foto se move mais devagar que a página. O cérebro lê essa diferença de
    velocidade como profundidade — parece que a foto está "atrás" do texto.
