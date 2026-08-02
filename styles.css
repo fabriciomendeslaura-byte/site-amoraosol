@@ -486,14 +486,6 @@ h1, h2, h3, h4 { font-family: var(--display); font-weight: 400; line-height: 1.0
 /* Recuo assimétrico: quebra o alinhamento e cria o ritmo diagonal de capa de revista */
 .hero__linha--recuo { margin-left: clamp(1.5rem, 9vw, 8rem); font-style: normal; font-weight: 500; }
 
-.hero__texto {
-  max-width: 36rem;
-  color: var(--neve-suave);
-  font-size: clamp(1rem, .95rem + .35vw, 1.2rem);
-  margin-bottom: 2.4rem;
-}
-
-.hero__botoes { display: flex; flex-wrap: wrap; gap: .9rem; }
 
 .hero__rodape {
   position: relative; z-index: 2;
@@ -591,8 +583,11 @@ h1, h2, h3, h4 { font-family: var(--display); font-weight: 400; line-height: 1.0
    Ao terminar o primeiro grupo, a posição visual é igual à inicial — o loop
    parece infinito e sem emenda.
    ============================================================================ */
+/* Faixa branca: separa o hero (foto escura) dos banners de coleção (fundo
+   laranja) com uma respirada clara. Antes ela era laranja e se misturava com
+   os banners logo abaixo — duas áreas laranja coladas viravam um bloco só. */
 .faixa {
-  background: var(--sol);
+  background: var(--neve);
   color: var(--carvao);
   padding: .85rem 0;
   overflow: hidden;
@@ -1227,7 +1222,6 @@ h1, h2, h3, h4 { font-family: var(--display); font-weight: 400; line-height: 1.0
 
   .hero__rodape { flex-direction: column; align-items: flex-start; gap: .9rem; }
   .hero__linha--recuo { margin-left: 1.2rem; }
-  .hero__botoes .botao { flex: 1 1 100%; }
 
   /* O espaçamento entre letras que dá ar editorial no desktop faz a frase
      quebrar em duas linhas no celular, e a bolinha fica boiando no meio.
