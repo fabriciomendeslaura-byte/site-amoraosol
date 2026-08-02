@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<!--
+  ============================================================================
+  AMOR AO SOL — Site de vendas (@amoraosol)
+  ----------------------------------------------------------------------------
+  Objetivo: o visitante se apaixona pela marca e sai pelo WhatsApp com o
+  produto E a variação (tamanho/cor) já escolhidos.
+  Arquivos: index.html (conteúdo) · styles.css (visual) · script.js (comportamento)
+  ============================================================================
+-->
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Amor ao Sol — Biquínis autorais feitos no Rio de Janeiro</title>
+  <meta name="description" content="Aqui tem amor em forma de biquíni. Peças autorais feitas no Rio de Janeiro, com entrega no mesmo dia na Zona Sul e envio para todo o Brasil.">
+  <meta name="theme-color" content="#12100E">
+
+  <meta property="og:title" content="Amor ao Sol — Biquínis feitos no Rio">
+  <meta property="og:description" content="Aqui tem amor em forma de biquíni. Do Rio para todo o Brasil.">
+  <meta property="og:image" content="assets/hero-praia-rio.jpeg">
+  <meta property="og:type" content="website">
+
+  <!-- Favicon vetorial: o símbolo da marca desenhado direto na URL, sem arquivo -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%23F79633'/%3E%3Cpath d='M50 74C50 74 26 60 26 44c0-8 6-14 13-14 5 0 9 3 11 7 2-4 6-7 11-7 7 0 13 6 13 14 0 16-24 30-24 30z' fill='%236B3A1F'/%3E%3C/svg%3E">
+
+  <!--
+    Fontes escolhidas para fugir do visual "template pronto":
+    · Bodoni Moda  → serifada de alto contraste, é a cara de revista de moda
+    · Style Script → manuscrita, é o lettering da marca (usada até na logo em SVG)
+    · Jost         → geométrica tipo Futura, limpa nos textos e nos botões
+  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..800;1,6..96,400..700&family=Jost:wght@300;400;500;600&family=Style+Script&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<!-- ==========================================================================
+     BIBLIOTECA DE SÍMBOLOS SVG (sprite)
+     --------------------------------------------------------------------------
+     Cada desenho é declarado UMA vez aqui e reaproveitado com <use href="#id">.
+     É DRY aplicado a imagem: a logo aparece em 4 lugares, mas existe em um só.
+     Este bloco não aparece na tela (display:none no CSS).
+     ========================================================================== -->
+<svg class="sprite" aria-hidden="true">
+  <defs>
+
+    <!-- ······································································
+         CORAÇÃO COM RAIOS DE SOL — o símbolo que a marca já usa.
+         Antes ele vivia espremido dentro de um disco laranja junto com o
+         lettering; agora é uma peça independente que entra no meio da palavra
+         "sol", ocupando o lugar do "o" — como na logo original da marca.
+
+         Usa currentColor: o símbolo assume a cor do texto ao redor, então a
+         mesma peça serve no cabeçalho escuro e no rodapé, sem duplicar código.
+         ······································································ -->
+    <!-- O viewBox é APERTADO no desenho (nada de moldura vazia em volta).
+         Com "0 0 60 60" o coração ocupava só metade da caixa, então o tamanho
+         pedido no CSS virava metade na tela e o símbolo sumia entre as letras.
+         Aqui a caixa começa e termina exatamente no traço: o que o CSS pede é
+         o que aparece. -->
+    <symbol id="coracao-raios" viewBox="-31 -28 62 52">
+      <path d="M0 22C0 22-16 12-16 1c0-5.5 4.2-9.6 9-9.6 3.2 0 6 1.9 7 4.6 1-2.7 3.8-4.6 7-4.6 4.8 0 9 4.1 9 9.6C16 12 0 22 0 22z" fill="currentColor"/>
+      <!-- Raios mais longos e encorpados: em tamanho de texto os antigos
+           viravam três pontinhos ilegíveis. -->
+      <g stroke="currentColor" stroke-width="4.4" stroke-linecap="round" fill="none">
+        <path d="M0 -15V-25.5"/>
+        <path d="M-12.5 -11l-7-7"/>
+        <path d="M12.5 -11l7-7"/>
+        <path d="M-19 -1h-10"/>
+        <path d="M19 -1h10"/>
+      </g>
+    </symbol>
+
+    <symbol id="ico-whatsapp" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M17.47 14.38c-.3-.15-1.75-.86-2.02-.96-.27-.1-.47-.15-.67.15-.2.3-.77.96-.94 1.16-.17.2-.35.22-.64.07-.3-.15-1.25-.46-2.38-1.47-.88-.78-1.47-1.75-1.64-2.05-.17-.3-.02-.46.13-.6.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.6-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.01-1.04 2.47s1.06 2.86 1.21 3.06c.15.2 2.1 3.2 5.08 4.49.71.3 1.26.49 1.69.63.71.22 1.36.19 1.87.12.57-.09 1.75-.72 2-1.41.25-.69.25-1.28.17-1.41-.07-.13-.27-.2-.57-.35zM12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm0 18.13h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.25-8.24a8.2 8.2 0 0 1 5.83 2.42 8.19 8.19 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.24 8.23z"/>
+    </symbol>
+
+    <symbol id="ico-estrela" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M12 2l2.9 6.26L21.5 9.2l-4.8 4.6 1.2 6.7L12 17.3 6.1 20.5l1.2-6.7-4.8-4.6 6.6-.94z"/>
+    </symbol>
+
+  </defs>
+</svg>
+
+
+<!-- Grão de filme sobre a tela inteira: textura analógica -->
+<div class="grao" aria-hidden="true"></div>
+
+
+<!-- ==========================================================================
+     CABEÇALHO
+     ========================================================================== -->
+<header class="cabecalho" id="cabecalho">
+  <!-- A logo agora é o próprio nome escrito (wordmark).
+       O aria-label garante que leitor de tela leia "Amor ao Sol" e não
+       "Amor ao s l" — o coração no meio da palavra é imagem, não letra. -->
+  <a href="#topo" class="marca-nome marca-nome--barra" aria-label="Amor ao Sol — início">
+    <span aria-hidden="true">Amor ao s<svg class="marca-nome__coracao" viewBox="0 0 60 60"><use href="#coracao-raios"/></svg>l</span>
+  </a>
+
+  <nav class="cabecalho__nav" id="menu">
+    <a href="#colecao">Coleção</a>
+    <a href="#acessorios">Acessórios</a>
+    <a href="#marca">A marca</a>
+    <a href="#entregas">Entregas</a>
+  </nav>
+
+  <div class="cabecalho__acoes">
+    <a href="#" class="botao botao--sol botao--pequeno zap">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#ico-whatsapp"/></svg>
+      Comprar
+    </a>
+    <button class="cabecalho__menu-btn" id="menu-btn" aria-label="Abrir menu" aria-expanded="false">
+      <span></span><span></span>
+    </button>
+  </div>
+</header>
+
+
+<!-- ==========================================================================
+     HERO — o "banner de vídeo"
+     --------------------------------------------------------------------------
+     Não usamos .mp4: empilhamos fotos reais da marca com efeito Ken Burns
+     (zoom lento, técnica de documentário) e crossfade entre elas.
+
+     O background-position de cada slide foi escolhido FOTO A FOTO. Como o hero
+     é largo e as fotos são verticais, sem esse ajuste o corte comeria o
+     assunto — em "50%" a modelo ficaria fora do quadro em algumas delas.
+     ========================================================================== -->
+<section class="hero" id="topo">
+
+  <div class="hero__filme" aria-hidden="true">
+    <!-- A própria fundadora abre o site: quem vende é ela, e a marca é
+         pessoal — o rosto de quem responde o WhatsApp vindo primeiro cria
+         a confiança antes de qualquer argumento de venda.
+         A classe is-active marca qual slide começa visível. -->
+    <div class="hero__slide is-active" style="background-image:url('assets/hero-praia-rio.jpeg'); background-position:center 32%"></div>
+    <!-- Fim de tarde na praia, luz dourada -->
+    <div class="hero__slide" style="background-image:url('assets/hero-por-do-sol.jpeg'); background-position:center 62%"></div>
+  </div>
+
+  <div class="hero__veu" aria-hidden="true"></div>
+  <div class="hero__sol" aria-hidden="true"></div>
+
+  <div class="hero__conteudo">
+    <p class="hero__eyebrow">
+      <span class="ponto"></span> Do Rio de Janeiro para todo o Brasil
+    </p>
+
+    <!-- O h1 é a própria bio do Instagram: frase da marca, já testada -->
+    <h1 class="hero__titulo">
+      <span class="hero__script">Amor</span>
+      <span class="hero__linha">em forma</span>
+      <span class="hero__linha hero__linha--recuo">de biquíni</span>
+    </h1>
+
+    <p class="hero__texto">
+      Peças autorais costuradas no Rio, pensadas para o corpo real e para o mar de verdade.
+      Confirmou até as 13h? Sai no mesmo dia.
+    </p>
+
+    <div class="hero__botoes">
+      <a href="#" class="botao botao--sol botao--grande zap">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#ico-whatsapp"/></svg>
+        Comprar pelo WhatsApp
+      </a>
+      <a href="#colecao" class="botao botao--vazado botao--grande">Ver a coleção</a>
+    </div>
+  </div>
+
+  <div class="hero__rodape">
+    <!-- Um indicador por slide: sobrando indicador, o usuário clicaria num
+         ponto que não leva a lugar nenhum. -->
+    <div class="hero__pontos" id="hero-pontos">
+      <button class="hero__ponto is-active" data-slide="0" aria-label="Imagem 1"></button>
+      <button class="hero__ponto" data-slide="1" aria-label="Imagem 2"></button>
+    </div>
+    <span class="hero__rolar">role para descobrir</span>
+  </div>
+</section>
+
+
+<!-- Faixa corrida: repete os diferenciais em movimento contínuo -->
+<div class="faixa" aria-hidden="true">
+  <div class="faixa__trilho">
+    <!-- Conteúdo duplicado de propósito: quando a primeira cópia termina de
+         passar, a segunda já está na tela = loop sem emenda. -->
+    <div class="faixa__grupo">
+      <span>Entrega no mesmo dia</span><i>✦</i>
+      <span>Feito no Rio</span><i>✦</i>
+      <span>Envio para todo o Brasil</span><i>✦</i>
+      <span>Retirada em Leblon · Ipanema · Copacabana</span><i>✦</i>
+      <span>Tecido com proteção UV</span><i>✦</i>
+    </div>
+    <div class="faixa__grupo">
+      <span>Entrega no mesmo dia</span><i>✦</i>
+      <span>Feito no Rio</span><i>✦</i>
+      <span>Envio para todo o Brasil</span><i>✦</i>
+      <span>Retirada em Leblon · Ipanema · Copacabana</span><i>✦</i>
+      <span>Tecido com proteção UV</span><i>✦</i>
+    </div>
+  </div>
+</div>
+
+
+<!-- ==========================================================================
+     COLEÇÃO
+     --------------------------------------------------------------------------
+     Cada peça leva o nome de uma praia — reforça o "feito no Rio" e dá
+     identidade sem cair em "Modelo 01".
+
+     COMO O CARD CONVERTE: a cliente escolhe o tamanho ali mesmo e o botão monta
+     a mensagem do WhatsApp já com peça + tamanho + preço. Ela não digita nada,
+     e a vendedora não precisa perguntar nada.
+
+     Sobre o object-position de cada foto: as fotos vêm do Instagram, cada uma
+     com o assunto numa altura diferente. O recorte 3/4 do card é ajustado
+     individualmente para que nenhuma peça fique cortada — é o que faz a grade
+     parecer um catálogo, e não um álbum bagunçado.
+     ========================================================================== -->
+<section class="secao secao--clara" id="colecao">
+  <div class="secao__cabeca revelar">
+    <p class="secao__eyebrow">Coleção Verão</p>
+    <h2 class="secao__titulo">Cada peça leva o nome<br>de uma praia<span class="secao__ponto">.</span></h2>
+    <p class="secao__texto">
+      Produção pequena e autoral. Escolha o seu tamanho e chame no WhatsApp —
+      a peça sai do ateliê no mesmo dia.
+    </p>
+  </div>
+
+  <div class="grade">
+
+    <article class="produto revelar" data-nome="Ipanema" data-preco="199">
+      <div class="produto__foto">
+        <img src="assets/produto-laranja-marrom.jpeg" alt="Biquíni Ipanema: conjunto laranja e marrom com alças finas" loading="lazy">
+        <span class="produto__selo">Mais vendido</span>
+      </div>
+      <div class="produto__info">
+        <h3>Ipanema</h3>
+        <p class="produto__desc">Duo laranja e marrom · top cortininha e meia taça</p>
+        <div class="produto__opcoes" data-rotulo="no tamanho" role="group" aria-label="Tamanho do biquíni Ipanema">
+          <button class="opcao is-ativo">P</button>
+          <button class="opcao">M</button>
+          <button class="opcao">G</button>
+          <button class="opcao">GG</button>
+        </div>
+        <div class="produto__precos">
+          <span class="produto__preco">R$ 199</span>
+          <span class="produto__parcela">3x de R$ 66 sem juros</span>
+        </div>
+        <a href="#" class="produto__cta zap">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#ico-whatsapp"/></svg>
+          Quero esse
+        </a>
+      </div>
+    </article>
+
+    <article class="produto revelar" data-nome="Prainha" data-preco="189">
+      <div class="produto__foto">
+        <img src="assets/produto-pessego.jpeg" alt="Biquíni Prainha: conjuntos pêssego e terracota com alça trançada" loading="lazy">
+        <span class="produto__selo produto__selo--novo">Novidade</span>
+      </div>
+      <div class="produto__info">
+        <h3>Prainha</h3>
+        <p class="produto__desc">Top triângulo · calcinha fio com alça trançada</p>
+        <div class="produto__opcoes" data-rotulo="no tamanho" role="group" aria-label="Tamanho do biquíni Prainha">
+          <button class="opcao is-ativo">P</button>
+          <button class="opcao">M</button>
+          <button class="opcao">G</button>
+          <button class="opcao">GG</button>
+        </div>
+        <div class="produto__precos">
+          <span class="produto__preco">R$ 189</span>
+          <span class="produto__parcela">3x de R$ 63 sem juros</span>
+        </div>
+        <a href="#" class="produto__cta zap">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#ico-whatsapp"/></svg>
+          Quero esse
+        </a>
+      </div>
+    </article>
+
+    <article class="produto revelar" data-nome="Copacabana" data-preco="189">
+      <div class="produto__foto">
+        <!-- Modelo sentada: o recorte sobe para 28% e mantém o rosto no quadro -->
+        <img src="assets/produto-grafite.jpeg" alt="Biquíni Copacabana: grafite com recorte vazado no top" loading="lazy" style="object-position:center 28%">
+      </div>
+      <div class="produto__info">
+        <h3>Copacabana</h3>
+        <p class="produto__desc">Top com recorte vazado · calcinha meia taça</p>
+        <div class="produto__opcoes" data-rotulo="no tamanho" role="group" aria-label="Tamanho do biquíni Copacabana">
+          <button class="opcao is-ativo">P</button>
+          <button class="opcao">M</button>
+          <button class="opcao">G</button>
+          <button class="opcao">GG</button>
+        </div>
+        <div class="produto__precos">
+          <span class="produto__preco">R$ 189</span>
+          <span class="produto__parcela">3x de R$ 63 sem juros</span>
+        </div>
+        <a href="#" class="produto__cta zap">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#ico-whatsapp"/></svg>
+          Quero esse
+        </a>
+      </div>
+    </article>
+
+    <article class="produto revelar" data-nome="Leblon" data-preco="199">
+      <div class="produto__foto">
+        <img src="assets/produto-vinho.jpeg" alt="Biquíni Leblon: vinho com detalhe vazado" loading="lazy" style="object-position:center 30%">
+      </div>
+      <div class="produto__info">
+        <h3>Leblon</h3>
+        <p class="produto__desc">Top com detalhe vazado · calcinha lateral fina</p>
+        <div class="produto__opcoes" data-rotulo="no tamanho" role="group" aria-label="Tamanho do biquíni Leblon">
+          <button class="opcao is-ativo">P</button>
+          <button class="opcao">M</button>
+          <button class="opcao">G</button>
+          <button class="opcao">GG</button>
+        </div>
+        <div class="produto__precos">
+          <span class="produto__preco">R$ 199</span>
+          <span class="produto__parcela">3x de R$ 66 sem juros</span>
+        </div>
+        <a href="#" class="produto__cta zap">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#ico-whatsapp"/></svg>
+          Quero esse
+        </a>
+      </div>
+    </article>
+
+    <article class="produto revelar" data-nome="Cagarras" data-preco="209">
+      <div class="produto__foto">
+        <img src="assets/produto-branco.jpeg" alt="Biquíni Cagarras: branco de amarrar, com saída rosa" loading="lazy" style="object-position:center 38%">
+      </div>
+      <div class="produto__info">
+        <h3>Cagarras</h3>
+        <p class="produto__desc">Top cortininha de amarrar · calcinha fio regulável</p>
+        <div class="produto__opcoes" data-rotulo="no tamanho" role="group" aria-label="Tamanho do biquíni Cagarras">
+          <button class="opcao is-ativo">P</button>
+          <button class="opcao">M</button>
+          <button class="opcao">G</button>
+          <button class="opcao">GG</button>
+        </div>
+        <div class="produto__precos">
+          <span class="produto__preco">R$ 209</span>
+          <span class="produto__parcela">3x de R$ 70 sem juros</span>
+        </div>
+        <a href="#" class="produto__cta zap">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#ico-whatsapp"/></svg>
+          Quero esse
+        </a>
+      </div>
+    </article>
+
+    <article class="produto revelar" data-nome="Joá" data-preco="199">
+      <div class="produto__foto">
+        <img src="assets/produto-marrom.jpeg" alt="Biquíni Joá: marrom com detalhe verde, top cropped" loading="lazy">
+      </div>
+      <div class="produto__info">
+        <h3>Joá</h3>
+        <p class="produto__desc">Top cropped · calcinha hot pants cintura alta</p>
+        <div class="produto__opcoes" data-rotulo="no tamanho" role="group" aria-label="Tamanho do biquíni Joá">
+          <button class="opcao is-ativo">P</button>
+          <button class="opcao">M</button>
+          <button class="opcao">G</button>
+          <button class="opcao">GG</button>
+        </div>
+        <div class="produto__precos">
+          <span class="produto__preco">R$ 199</span>
+          <span class="produto__parcela">3x de R$ 66 sem juros</span>
+        </div>
+        <a href="#" class="produto__cta zap">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#ico-whatsapp"/></svg>
+          Quero esse
+        </a>
+      </div>
+    </article>
+
+    <article class="produto revelar" data-nome="Búzios" data-preco="179">
+      <div class="produto__foto">
+        <img src="assets/hero-mar-azul.jpeg" alt="Biquíni Búzios: azul bic de amarrar" loading="lazy">
+      </div>
+      <div class="produto__info">
+        <h3>Búzios</h3>
+        <p class="produto__desc">Top cortininha de amarrar · calcinha fio regulável</p>
+        <div class="produto__opcoes" data-rotulo="no tamanho" role="group" aria-label="Tamanho do biquíni Búzios">
+          <button class="opcao is-ativo">P</button>
+          <button class="opcao">M</button>
+          <button class="opcao">G</button>
+          <button class="opcao">GG</button>
+        </div>
+        <div class="produto__precos">
+          <span class="produto__preco">R$ 179</span>
+          <span class="produto__parcela">3x de R$ 60 sem juros</span>
+        </div>
+        <a href="#" class="produto__cta zap">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#ico-whatsapp"/></svg>
+          Quero esse
+        </a>
+      </div>
+    </article>
+
+    <article class="produto revelar" data-nome="Milagres" data-preco="189">
+      <div class="produto__foto">
+        <img src="assets/hero-peixes.jpeg" alt="Biquíni Milagres: verde água de amarrar" loading="lazy">
+      </div>
+      <div class="produto__info">
+        <h3>Milagres</h3>
+        <p class="produto__desc">Top triângulo · calcinha de lacinho ajustável</p>
+        <div class="produto__opcoes" data-rotulo="no tamanho" role="group" aria-label="Tamanho do biquíni Milagres">
+          <button class="opcao is-ativo">P</button>
+          <button class="opcao">M</button>
+          <button class="opcao">G</button>
+          <button class="opcao">GG</button>
+        </div>
+        <div class="produto__precos">
+          <span class="produto__preco">R$ 189</span>
+          <span class="produto__parcela">3x de R$ 63 sem juros</span>
+        </div>
+        <a href="#" class="produto__cta zap">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#ico-whatsapp"/></svg>
+          Quero esse
+        </a>
+      </div>
+    </article>
+
+  </div>
+
+  <div class="colecao__saida revelar">
+    <p>Não achou a sua cor? Tem <strong>mais de 160 combinações</strong> publicadas no nosso Instagram.</p>
+    <a href="https://instagram.com/amoraosol" target="_blank" rel="noopener" class="botao botao--escuro">
+      Ver estoque completo no @amoraosol
+    </a>
+  </div>
+</section>
+
+
+<!-- ==========================================================================
+     GUIA DE MEDIDAS
+     --------------------------------------------------------------------------
+     Vem logo depois da coleção porque é exatamente ali que a cliente trava:
+     "será que serve em mim?". Em moda praia essa é a objeção nº 1 de compra
+     online e a causa nº 1 de troca — responder aqui vende mais e devolve menos.
+
+     A saída final é humana: quem continuar em dúvida chama no WhatsApp e a
+     dona da marca ajuda a escolher. Melhor uma conversa que uma venda errada.
+
+     ATENÇÃO: as medidas abaixo são uma referência de mercado para moda praia
+     brasileira. CONFIRMAR com a cliente as medidas reais da modelagem dela
+     antes de publicar — tabela errada gera troca, que é justamente o que
+     esta seção existe para evitar.
+     ========================================================================== -->
+<section class="secao secao--escura medidas" id="medidas">
+  <div class="secao__cabeca revelar">
+    <p class="secao__eyebrow">Guia de medidas</p>
+    <h2 class="secao__titulo">Qual é o<br>seu tamanho<span class="secao__ponto">?</span></h2>
+    <p class="secao__texto">
+      Meça por cima da pele, com a fita justa mas sem apertar. Na dúvida entre
+      dois tamanhos, vá no maior — nossas peças são reguláveis nas amarrações.
+    </p>
+  </div>
+
+  <div class="medidas__grade">
+
+    <!-- A tabela rola sozinha no celular em vez de espremer as colunas
+         (o container tem overflow-x: auto no CSS). -->
+    <div class="medidas__tabela-area revelar">
+      <table class="medidas__tabela">
+        <caption class="visualmente-oculto">Medidas em centímetros por tamanho</caption>
+        <thead>
+          <tr>
+            <th scope="col">Tam.</th>
+            <th scope="col">Busto</th>
+            <th scope="col">Cintura</th>
+            <th scope="col">Quadril</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">P</th>  <td>82–87</td>   <td>62–67</td> <td>88–93</td></tr>
+          <tr><th scope="row">M</th>  <td>88–93</td>   <td>68–73</td> <td>94–99</td></tr>
+          <tr><th scope="row">G</th>  <td>94–99</td>   <td>74–79</td> <td>100–105</td></tr>
+          <tr><th scope="row">GG</th> <td>100–105</td> <td>80–85</td> <td>106–111</td></tr>
+        </tbody>
+      </table>
+      <p class="medidas__nota">Medidas do corpo em centímetros — não da peça.</p>
+    </div>
+
+    <div class="medidas__ajuda revelar">
+      <h3>Como medir</h3>
+
+      <!-- Lista numerada de verdade (<ol>): aqui a ordem importa, são passos.
+           Numerar por enfeite em conteúdo sem sequência é ruído. -->
+      <ol class="medidas__passos">
+        <li><strong>Busto</strong> — na parte mais cheia, com a fita paralela ao chão.</li>
+        <li><strong>Cintura</strong> — na parte mais fina do tronco, acima do umbigo.</li>
+        <li><strong>Quadril</strong> — na parte mais larga, com os pés juntos.</li>
+      </ol>
+
+      <div class="medidas__dica">
+        <strong>Top e calcinha podem ter tamanhos diferentes.</strong>
+        É só avisar no WhatsApp — a gente monta o conjunto do seu jeito, sem custo extra.
+      </div>
+
+      <!-- A mensagem já vai com as lacunas prontas: a cliente só preenche os
+           números. Pedir "manda suas medidas" sem modelo faz muita gente
+           desistir na hora de escrever. -->
+      <a href="#" class="botao botao--zap zap"
+         data-mensagem="Oi! Não sei qual tamanho escolher 🧡 Minhas medidas são: busto ___ cm, cintura ___ cm, quadril ___ cm. Qual vocês indicam?">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#ico-whatsapp"/></svg>
+        Não sei meu tamanho
+      </a>
+      <p class="medidas__aviso">
+        <span class="pulso-online"></span> Manda suas medidas que a gente te diz qual serve
+      </p>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ==========================================================================
+     BANNER DE NICHO — faixa imersiva, sem nada para clicar.
+     Vende o SENTIMENTO (mar, verão, viagem) em vez do produto.
+     ========================================================================== -->
+<section class="banner" id="banner">
+  <div class="banner__foto" data-parallax aria-hidden="true"></div>
+  <div class="banner__veu" aria-hidden="true"></div>
+  <div class="banner__conteudo revelar">
+    <p class="banner__eyebrow">Verão 2026</p>
+    <h2 class="banner__titulo">
+      Feito para molhar,<br>
+      <span class="banner__script">secar e molhar de novo</span>
+    </h2>
+    <p class="banner__texto">
+      Tecido com proteção UV e forro duplo: mantém a cor e o caimento
+      depois do sal, do cloro e da areia.
+    </p>
+  </div>
+</section>
+
+
+<!-- ==========================================================================
+     ACESSÓRIOS
+     --------------------------------------------------------------------------
+     A marca não vende só biquíni — os bonés bordados são produto próprio e
+     aparecem no feed dela. Ganham seção própria porque têm outra lógica de
+     compra: não tem P/M/G, tem COR.
+
+     Repare que o card é o MESMO componente .produto da coleção. O seletor de
+     opções é genérico: o data-rotulo diz se aquela escolha é tamanho ou cor.
+     Um componente, dois usos — em vez de duplicar tudo para o boné.
+     ========================================================================== -->
+<section class="secao secao--escura acessorios" id="acessorios">
+  <div class="secao__cabeca revelar">
+    <p class="secao__eyebrow">Acessórios</p>
+    <h2 class="secao__titulo">Não é só biquíni<span class="secao__ponto">.</span></h2>
+    <p class="secao__texto">
+      Boné de sarja com bordado da marca, para completar o look do pé na areia
+      até o quiosque.
+    </p>
+  </div>
+
+  <div class="acessorios__grade">
+    <!-- Foto de contexto: mostra o boné sendo usado, não só no cabide -->
+    <figure class="acessorios__lifestyle revelar">
+      <img src="assets/banner-bone-praia.jpeg" alt="Cliente usando o boné Amor ao Sol na praia, com Dois Irmãos ao fundo" loading="lazy" style="object-position:center 30%">
+      <figcaption>Praia de São Conrado, Rio de Janeiro</figcaption>
+    </figure>
+
+    <article class="produto revelar" data-nome="Boné Amor ao Sol" data-preco="119">
+      <div class="produto__foto">
+        <img src="assets/bones.jpeg" alt="Bonés Amor ao Sol nas cores marrom, terracota e grafite" loading="lazy">
+        <span class="produto__selo produto__selo--novo">Bordado à mão</span>
+      </div>
+      <div class="produto__info">
+        <h3>Boné Amor ao Sol</h3>
+        <p class="produto__desc">Sarja de algodão · bordado lateral · fecho ajustável</p>
+        <div class="produto__opcoes" data-rotulo="na cor" role="group" aria-label="Cor do boné">
+          <button class="opcao is-ativo">Marrom</button>
+          <button class="opcao">Terracota</button>
+          <button class="opcao">Grafite</button>
+        </div>
+        <div class="produto__precos">
+          <span class="produto__preco">R$ 119</span>
+          <span class="produto__parcela">3x de R$ 40 sem juros</span>
+        </div>
+        <a href="#" class="produto__cta zap">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#ico-whatsapp"/></svg>
+          Quero esse
+        </a>
+      </div>
+    </article>
+  </div>
+</section>
+
+
+<!-- ==========================================================================
+     DEPOIMENTOS — prova social.
+     Quem compra por WhatsApp compra por confiança. Ver outra cliente satisfeita
+     vale mais que qualquer adjetivo que a marca use sobre si mesma.
+
+     ATENÇÃO: os textos abaixo são EXEMPLOS para demonstrar o layout.
+     Substituir por prints/mensagens reais de clientes antes de publicar.
+     ========================================================================== -->
+<section class="secao secao--clara" id="depoimentos">
+  <div class="secao__cabeca revelar">
+    <p class="secao__eyebrow">Quem já usa</p>
+    <h2 class="secao__titulo">Elas contam melhor<br>do que a gente<span class="secao__ponto">.</span></h2>
+  </div>
+
+  <div class="depoimentos">
+    <figure class="depoimento revelar">
+      <div class="depoimento__estrelas" aria-label="5 de 5 estrelas">
+        <svg viewBox="0 0 24 24"><use href="#ico-estrela"/></svg>
+        <svg viewBox="0 0 24 24"><use href="#ico-estrela"/></svg>
+        <svg viewBox="0 0 24 24"><use href="#ico-estrela"/></svg>
+        <svg viewBox="0 0 24 24"><use href="#ico-estrela"/></svg>
+        <svg viewBox="0 0 24 24"><use href="#ico-estrela"/></svg>
+      </div>
+      <blockquote>Pedi de manhã e recebi no mesmo dia em Ipanema. O caimento é outra coisa, não sobe nem com onda.</blockquote>
+      <figcaption>Marina · Ipanema</figcaption>
+    </figure>
+
+    <figure class="depoimento revelar">
+      <div class="depoimento__estrelas" aria-label="5 de 5 estrelas">
+        <svg viewBox="0 0 24 24"><use href="#ico-estrela"/></svg>
+        <svg viewBox="0 0 24 24"><use href="#ico-estrela"/></svg>
+        <svg viewBox="0 0 24 24"><use href="#ico-estrela"/></svg>
+        <svg viewBox="0 0 24 24"><use href="#ico-estrela"/></svg>
+        <svg viewBox="0 0 24 24"><use href="#ico-estrela"/></svg>
+      </div>
+      <blockquote>Errei o tamanho e trocaram sem drama nenhum. Atendimento pelo WhatsApp igual conversar com amiga.</blockquote>
+      <figcaption>Camila · São Paulo</figcaption>
+    </figure>
+
+    <figure class="depoimento revelar">
+      <div class="depoimento__estrelas" aria-label="5 de 5 estrelas">
+        <svg viewBox="0 0 24 24"><use href="#ico-estrela"/></svg>
+        <svg viewBox="0 0 24 24"><use href="#ico-estrela"/></svg>
+        <svg viewBox="0 0 24 24"><use href="#ico-estrela"/></svg>
+        <svg viewBox="0 0 24 24"><use href="#ico-estrela"/></svg>
+        <svg viewBox="0 0 24 24"><use href="#ico-estrela"/></svg>
+      </div>
+      <blockquote>Terceiro que compro. A cor não desbota mesmo depois de piscina, e chegou embaladinho num capricho.</blockquote>
+      <figcaption>Rafaela · Recife</figcaption>
+    </figure>
+  </div>
+</section>
+
+
+<!-- ==========================================================================
+     A MARCA — layout assimétrico de propósito: foto menor que o texto,
+     criando o desequilíbrio típico de editorial de revista.
+     ========================================================================== -->
+<section class="secao secao--escura marca" id="marca">
+  <div class="marca__foto revelar">
+    <img src="assets/fundadora.jpeg" alt="Fundadora da Amor ao Sol" loading="lazy">
+    <span class="marca__etiqueta">Rio de Janeiro</span>
+  </div>
+
+  <div class="marca__texto revelar">
+    <p class="secao__eyebrow">A marca</p>
+    <h2 class="secao__titulo">
+      Começou com uma<br>máquina de costura<br>e um verão inteiro<span class="secao__ponto">.</span>
+    </h2>
+    <p>
+      A Amor ao Sol nasceu do jeito mais carioca possível: da vontade de ter um biquíni
+      que servisse de verdade, que não escorregasse na primeira onda e que fosse bonito
+      dentro e fora d'água.
+    </p>
+    <p>
+      Hoje cada peça continua saindo daqui do Rio, em produção pequena, escolhida fio a fio.
+      Nada de estoque gigante e revenda — é a mesma pessoa que corta, costura, fotografa e
+      responde o seu WhatsApp.
+    </p>
+
+    <p class="marca__assinatura">com amor, Amor ao Sol</p>
+
+    <div class="marca__numeros">
+      <div><strong>+2.700</strong><span>clientes acompanhando</span></div>
+      <div><strong>+160</strong><span>looks publicados</span></div>
+      <div><strong>1 dia</strong><span>para sair do ateliê</span></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ==========================================================================
+     ENTREGAS — dados reais tirados do material da própria marca.
+     É objeção de compra pura: "chega quando?" respondido antes de perguntar.
+     ========================================================================== -->
+<section class="secao secao--clara entregas" id="entregas">
+  <div class="secao__cabeca revelar">
+    <p class="secao__eyebrow">Como chega até você</p>
+    <h2 class="secao__titulo">Compre e receba<br>no mesmo dia<span class="secao__ponto">.</span></h2>
+  </div>
+
+  <div class="entregas__grade">
+    <article class="entrega revelar">
+      <h3>Correios</h3>
+      <p>Envio para todo o Brasil. Pedidos confirmados até as <strong>13h</strong> são despachados no mesmo dia útil.</p>
+    </article>
+
+    <article class="entrega revelar">
+      <h3>Uber moto</h3>
+      <p>Retirada rápida a partir de dois pontos — <strong>zona sul e centro</strong> — mediante agendamento pelo WhatsApp.</p>
+    </article>
+
+    <article class="entrega revelar">
+      <h3>Entrega física</h3>
+      <p>Pontos no <strong>Leblon, Ipanema e Copacabana</strong>, em dias úteis, conforme disponibilidade. Agendamento pelo WhatsApp.</p>
+    </article>
+
+    <div class="entregas__foto revelar">
+      <img src="assets/entregas.jpeg" alt="Sacolas laranja da Amor ao Sol com etiqueta da marca" loading="lazy">
+    </div>
+  </div>
+</section>
+
+
+<!-- ==========================================================================
+     CHAMADA FINAL — última porta de saída para o WhatsApp
+     ========================================================================== -->
+<section class="chamada" id="contato">
+  <div class="chamada__conteudo revelar">
+    <p class="marca-nome marca-nome--grande" aria-label="Amor ao Sol">
+      <span aria-hidden="true">Amor ao s<svg class="marca-nome__coracao" viewBox="0 0 60 60"><use href="#coracao-raios"/></svg>l</span>
+    </p>
+
+    <h2 class="chamada__titulo">
+      Me conta qual é a sua praia<br>
+      <span class="chamada__script">que eu te ajudo a escolher</span>
+    </h2>
+    <p class="chamada__texto">
+      Dúvida de tamanho, cor ou modelo? Chama no WhatsApp que a gente resolve
+      em dois minutos — quem responde é a dona da marca.
+    </p>
+
+    <a href="#" class="botao botao--zap botao--grande zap">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#ico-whatsapp"/></svg>
+      Falar no WhatsApp agora
+    </a>
+    <p class="chamada__aviso">
+      <span class="pulso-online"></span> Costuma responder em poucos minutos · Seg a Sáb
+    </p>
+  </div>
+</section>
+
+
+<!-- ==========================================================================
+     RODAPÉ
+     ========================================================================== -->
+<footer class="rodape">
+  <div class="rodape__topo">
+    <div class="rodape__marca">
+      <p class="marca-nome marca-nome--rodape" aria-label="Amor ao Sol">
+        <span aria-hidden="true">Amor ao s<svg class="marca-nome__coracao" viewBox="0 0 60 60"><use href="#coracao-raios"/></svg>l</span>
+      </p>
+      <p>Aqui tem amor em forma de biquíni.<br>Do Rio para todo o Brasil.</p>
+    </div>
+
+    <nav class="rodape__links" aria-label="Navegação do rodapé">
+      <div>
+        <h4>Loja</h4>
+        <a href="#colecao">Coleção</a>
+        <a href="#acessorios">Acessórios</a>
+        <a href="#entregas">Entregas</a>
+        <a href="#marca">Sobre a marca</a>
+      </div>
+      <div>
+        <h4>Contato</h4>
+        <a href="https://instagram.com/amoraosol" target="_blank" rel="noopener">@amoraosol</a>
+        <a href="#" class="zap">WhatsApp (21) 96858-7580</a>
+      </div>
+    </nav>
+  </div>
+
+  <div class="rodape__base">
+    <span>© 2026 Amor ao Sol · Rio de Janeiro</span>
+    <span>Feito com sol.</span>
+  </div>
+</footer>
+
+
+<!-- ==========================================================================
+     BOTÃO FLUTUANTE DO WHATSAPP
+     Só o círculo verde com o ícone, pulsando. Aparece depois do hero para não
+     competir com o botão principal. O aria-label existe porque o botão não tem
+     texto visível — sem ele, quem usa leitor de tela ouviria apenas "link".
+     ========================================================================== -->
+<a href="#" class="zap-fab zap" aria-label="Comprar pelo WhatsApp">
+  <span class="zap-fab__anel" aria-hidden="true"></span>
+  <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ico-whatsapp"/></svg>
+</a>
+
+<script src="script.js"></script>
+</body>
+</html>

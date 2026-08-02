@@ -1,0 +1,1212 @@
+/* ============================================================================
+   AMOR AO SOL — Folha de estilos
+   ----------------------------------------------------------------------------
+   Ordem do arquivo (é a mesma ordem em que a página é montada):
+     1. Variáveis        — as cores e medidas oficiais da marca
+     2. Reset e base
+     3. Componentes      — botões, logo, faixa, animação de entrada
+     4. Cabeçalho
+     5. Hero
+     6. Selos de confiança
+     7. Coleção
+     8. Banner, depoimentos, marca, entregas, chamada
+     9. Rodapé e barra flutuante do WhatsApp
+    10. Responsivo
+   ============================================================================ */
+
+
+/* ============================================================================
+   1. VARIÁVEIS — fonte única da verdade do visual (Single Source of Truth)
+   ----------------------------------------------------------------------------
+   Todas tiradas das imagens REAIS da marca: o laranja é o do círculo da logo,
+   o coral é o das sacolas de entrega, o marrom é o do lettering.
+   Mudou o tom aqui? O site inteiro acompanha. Isso é DRY aplicado a design.
+   ============================================================================ */
+:root {
+  /* Cores da marca */
+  --sol:        #F79633;
+  --sol-claro:  #FFB865;
+  --coral:      #E8502A;
+  --terra:      #6B3A1F;
+  --carvao:     #12100E;
+  --carvao-2:   #1B1613;
+  --areia:      #F4EBDF;
+  --areia-2:    #E3D4C0;
+
+  /* Verde do WhatsApp: usamos o oficial de propósito. O reconhecimento
+     instantâneo do ícone converte mais do que combinar com a paleta. */
+  --zap:        #25D366;
+  --zap-escuro: #128C7E;
+
+  /* Texto */
+  --tinta:        #191410;
+  --tinta-suave:  rgba(25, 20, 16, .62);
+  --neve:         #F7F1E9;
+  --neve-suave:   rgba(247, 241, 233, .66);
+
+  /* Tipografia */
+  --display: 'Bodoni Moda', 'Didot', 'Times New Roman', serif;
+  --script:  'Style Script', 'Snell Roundhand', cursive;
+  --corpo:   'Jost', 'Futura', 'Helvetica Neue', sans-serif;
+
+  /* Espaçamento. clamp(mínimo, ideal, máximo) encolhe sozinho no celular
+     e cresce no desktop, sem precisar de media query. */
+  --respiro: clamp(4.5rem, 9vw, 9rem);
+  --margem:  clamp(1.25rem, 5vw, 5.5rem);
+
+  /* Curva de animação própria: começa rápido e desacelera devagar.
+     Ter um easing só, usado em tudo, dá "assinatura" ao movimento do site. */
+  --suave: cubic-bezier(.2, .7, .2, 1);
+
+  /* O site tem uma identidade cromática fixa (carvão + sol), então declaramos
+     o esquema em vez de deixar o navegador tentar inverter as cores. */
+  color-scheme: dark;
+}
+
+
+/* ============================================================================
+   2. RESET E BASE
+   ============================================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 7rem;   /* impede o cabeçalho fixo de cobrir o título alvo
+                                 ao pular por um link de âncora (#colecao etc.) */
+}
+
+body {
+  background: var(--carvao);
+  color: var(--neve);
+  font-family: var(--corpo);
+  font-weight: 300;
+  font-size: clamp(1rem, .95rem + .2vw, 1.075rem);
+  line-height: 1.65;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { display: block; max-width: 100%; height: auto; }
+a   { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+h1, h2, h3, h4 { font-family: var(--display); font-weight: 400; line-height: 1.02; text-wrap: balance; }
+
+/* Contorno visível para quem navega de teclado (Tab). Acessibilidade não é extra. */
+:focus-visible { outline: 2px solid var(--sol); outline-offset: 3px; border-radius: 2px; }
+
+/* O bloco de símbolos SVG existe só para ser referenciado por <use>.
+   Ele não deve ocupar espaço nenhum na página. */
+.sprite { display: none; }
+
+/* Ícone padrão dentro de botões */
+.ico { width: 1.15em; height: 1.15em; flex-shrink: 0; }
+
+
+/* Grão de filme sobre a tela inteira.
+   O ruído é um SVG gerado em código (data URI = embutido, sem baixar arquivo).
+   pointer-events:none é obrigatório, senão essa camada rouba todos os cliques. */
+.grao {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: .3;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+}
+
+
+/* ============================================================================
+   3. COMPONENTES
+   ============================================================================ */
+
+/* ---------------------------------------------------------------------------
+   LOGO — WORDMARK ("Amor ao s♥l")
+   ---------------------------------------------------------------------------
+   O disco laranja com o lettering dentro foi aposentado. Motivo técnico: texto
+   manuscrito dentro de um círculo tem limite físico de redução — para caber no
+   disco, a letra fica pequena demais e some em qualquer tamanho de barra.
+
+   Aqui o NOME é a logo. O lettering ocupa a largura toda que precisa (não está
+   preso a um círculo), então continua legível mesmo pequeno, e o coração com
+   raios entra no lugar do "o" de "sol" — o mesmo detalhe da marca original.
+
+   Um único componente com três tamanhos (barra, rodapé, chamada final), em vez
+   de três logos diferentes. As medidas internas estão todas em `em`, ou seja,
+   proporcionais ao font-size: muda o tamanho da fonte e o desenho inteiro
+   acompanha na proporção certa, sem reajustar nada.
+   --------------------------------------------------------------------------- */
+.marca-nome {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--script);
+  font-weight: 400;
+  line-height: 1;
+  color: var(--sol);
+  white-space: nowrap;         /* o nome nunca quebra no meio */
+  letter-spacing: .01em;
+  transition: color .4s var(--suave), transform .5s var(--suave);
+}
+
+/* O coração ocupa o lugar do "o" de "sol", então precisa ter o peso visual de
+   uma letra — não de um ícone decorativo ao lado.
+
+   As proporções seguem o viewBox (62 de largura × 52 de altura), por isso a
+   largura é maior que a altura: forçar um quadrado achataria o desenho.
+   Tudo em `em` para escalar junto com a fonte nas três variações. */
+.marca-nome__coracao {
+  width: .92em;
+  height: .77em;
+  margin: 0 .06em;          /* respiro: antes ficava colado no "s" e no "l" */
+  flex-shrink: 0;
+
+  /* Alinhamento óptico à linha de base do lettering. A manuscrita tem eixo
+     inclinado e base ondulada, então o centro matemático não é o centro que o
+     olho enxerga — este deslocamento foi calibrado olhando o render, não a conta. */
+  transform: translateY(.1em);
+}
+
+/* --- Variação: barra do topo --- */
+.marca-nome--barra {
+  font-size: clamp(1.9rem, 3.4vw, 3rem);
+  text-shadow: 0 2px 18px rgba(18, 16, 14, .55);   /* garante leitura sobre a foto */
+}
+.marca-nome--barra:hover { color: var(--sol-claro); transform: translateY(-1px); }
+/* Com o cabeçalho encolhido após rolar, o nome encolhe junto */
+.cabecalho.is-scrolled .marca-nome--barra { font-size: clamp(1.7rem, 2.8vw, 2.4rem); }
+
+/* --- Variação: chamada final (o maior de todos) --- */
+.marca-nome--grande {
+  font-size: clamp(3rem, 8vw, 5.5rem);
+  margin-bottom: 1.4rem;
+  filter: drop-shadow(0 0 44px rgba(247, 150, 51, .45));
+}
+
+/* --- Variação: rodapé --- */
+.marca-nome--rodape {
+  font-size: clamp(2.2rem, 4vw, 3rem);
+  margin-bottom: 1rem;
+}
+
+
+/* ---------------------------------------------------------------------------
+   BOTÕES
+   --------------------------------------------------------------------------- */
+.botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .6rem;
+  padding: 1rem 2rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-family: var(--corpo);
+  font-size: .78rem;
+  font-weight: 500;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;                       /* segura o brilho do hover dentro */
+  transition: transform .45s var(--suave), background .35s, color .35s, border-color .35s, box-shadow .35s;
+}
+.botao:hover { transform: translateY(-2px); }
+
+/* Brilho diagonal que atravessa o botão no hover.
+   É pseudo-elemento: não polui o HTML com <div> decorativa. */
+.botao::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,.42) 50%, transparent 65%);
+  transform: translateX(-120%);
+  transition: transform .7s var(--suave);
+}
+.botao:hover::after { transform: translateX(120%); }
+
+.botao--sol       { background: var(--sol); color: var(--carvao); }
+.botao--sol:hover { background: var(--sol-claro); box-shadow: 0 12px 34px rgba(247,150,51,.32); }
+
+/* Botão vazado: só contorno, "acende" no hover.
+   As duas cores são declaradas explicitamente porque herdar a cor do contexto
+   deixaria o texto ilegível dependendo do fundo. */
+.botao--vazado       { border-color: currentColor; background: transparent; }
+.botao--vazado:hover { background: var(--sol); border-color: var(--sol); color: var(--carvao); }
+
+.botao--escuro       { background: var(--carvao); color: var(--neve); }
+.botao--escuro:hover { background: var(--terra); }
+
+/* Botão na cor do WhatsApp, para quando a ação É abrir o WhatsApp */
+.botao--zap       { background: var(--zap); color: #06301A; }
+.botao--zap:hover { background: #2EE873; box-shadow: 0 14px 40px rgba(37,211,102,.36); }
+
+.botao--pequeno { padding: .7rem 1.3rem; font-size: .68rem; }
+.botao--grande  { padding: 1.15rem 2.4rem; font-size: .8rem; }
+
+
+/* ---------------------------------------------------------------------------
+   PONTO "ONLINE" — bolinha verde que pulsa, igual às de app de mensagem.
+   Sinal visual de que tem gente do outro lado agora.
+   --------------------------------------------------------------------------- */
+.pulso-online {
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--zap);
+  margin-right: .45rem;
+  box-shadow: 0 0 0 0 rgba(37, 211, 102, .75);
+  animation: pulso 2.2s infinite;
+}
+@keyframes pulso {
+  70%  { box-shadow: 0 0 0 10px rgba(37, 211, 102, 0); }
+  100% { box-shadow: 0 0 0 0  rgba(37, 211, 102, 0); }
+}
+
+
+/* ---------------------------------------------------------------------------
+   ANIMAÇÃO DE ENTRADA
+   O elemento nasce invisível e deslocado; o JS adiciona .is-visivel quando ele
+   aparece na tela. O visual fica no CSS, o "quando" fica no JS — cada arquivo
+   com uma responsabilidade só (SRP).
+   --------------------------------------------------------------------------- */
+/* PROGRESSIVE ENHANCEMENT — o conteúdo nasce VISÍVEL.
+   Só depois que o JS confirma que está rodando (adicionando a classe .js no
+   <html>) é que os elementos passam a começar escondidos para a animação.
+
+   Por que isso importa: se o JS falhar — erro, rede ruim, bloqueador —, a
+   regra `.revelar { opacity: 0 }` sozinha esconderia a coleção INTEIRA para
+   sempre. O site viraria uma página em branco e ninguém compraria nada.
+   A animação é um extra; o conteúdo é o essencial e nunca depende dela. */
+.revelar { transition: opacity .9s var(--suave), transform .9s var(--suave); }
+
+.js .revelar { opacity: 0; transform: translateY(28px); }
+.js .revelar.is-visivel { opacity: 1; transform: none; }
+
+/* Respeita quem ligou "reduzir movimento" no sistema (enjoo de movimento). */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+  .js .revelar { opacity: 1; transform: none; }
+  html { scroll-behavior: auto; }
+}
+
+
+/* ============================================================================
+   4. CABEÇALHO
+   ============================================================================ */
+.cabecalho {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1.1rem var(--margem);
+  border-bottom: 1px solid transparent;
+  transition: background .5s var(--suave), padding .5s var(--suave), border-color .5s;
+}
+
+/* VÉU DE LEGIBILIDADE — sombra suave atrás da barra, sempre presente.
+   Sem ela, quando a logo passa por cima do título claro do hero (ou de uma
+   foto estourada de sol), o lettering laranja some no fundo. Um cabeçalho
+   transparente sobre imagem SEMPRE precisa de um degradê como este. */
+.cabecalho::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(18, 16, 14, .8), rgba(18, 16, 14, .25) 65%, transparent);
+  transition: opacity .5s var(--suave);
+}
+/* Depois de rolar, o fundo de vidro fosco assume e o degradê sai de cena */
+.cabecalho.is-scrolled::before { opacity: 0; }
+
+/* Estado aplicado pelo JS após rolar: o cabeçalho "materializa".
+   backdrop-filter desfoca o que passa atrás = efeito vidro fosco. */
+.cabecalho.is-scrolled {
+  background: rgba(18, 16, 14, .82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom-color: rgba(247, 150, 51, .18);
+  padding-block: .7rem;
+}
+
+.cabecalho__nav { display: flex; gap: 2.1rem; }
+.cabecalho__nav a {
+  font-size: .74rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--neve-suave);
+  position: relative;
+  padding-bottom: 3px;
+  transition: color .3s;
+}
+/* Sublinhado que cresce da esquerda no hover */
+.cabecalho__nav a::after {
+  content: '';
+  position: absolute;
+  left: 0; bottom: 0;
+  width: 100%; height: 1px;
+  background: var(--sol);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .45s var(--suave);
+}
+.cabecalho__nav a:hover { color: var(--neve); }
+.cabecalho__nav a:hover::after { transform: scaleX(1); }
+
+.cabecalho__acoes { display: flex; align-items: center; gap: 1rem; }
+
+.cabecalho__menu-btn {
+  display: none;                          /* só aparece no mobile (bloco 10) */
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  width: 42px; height: 42px;
+  border: 1px solid rgba(247, 241, 233, .25);
+  border-radius: 50%;
+}
+.cabecalho__menu-btn span {
+  display: block;
+  width: 17px; height: 1.5px;
+  margin-inline: auto;
+  background: var(--neve);
+  transition: transform .4s var(--suave);
+}
+/* Vira "X" com o menu aberto */
+.cabecalho__menu-btn.is-open span:first-child { transform: translateY(3.75px) rotate(45deg); }
+.cabecalho__menu-btn.is-open span:last-child  { transform: translateY(-3.75px) rotate(-45deg); }
+
+
+/* ============================================================================
+   5. HERO
+   ============================================================================ */
+.hero {
+  position: relative;
+  min-height: 100svh;         /* svh = altura real do celular, já descontando a
+                                 barra do navegador. Evita o corte no iPhone. */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+
+  /* O padding-top RESERVA o espaço do cabeçalho.
+     O cabeçalho é `position: fixed`, ou seja, foi retirado do fluxo da página:
+     ele flutua por cima e nada empurra nada. Em tela larga e baixa o conteúdo
+     do hero crescia para cima e passava POR BAIXO da barra, colidindo com a
+     logo. Com esta folga o hero cresce para baixo e a colisão some. */
+  padding: clamp(8.5rem, 16vh, 12rem) var(--margem) clamp(2rem, 5vw, 3.5rem);
+  overflow: hidden;
+}
+
+.hero__filme { position: absolute; inset: 0; }
+
+.hero__slide {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center 35%;   /* puxa o enquadramento para cima, mantendo
+                                        rosto e horizonte no terço superior */
+  opacity: 0;
+  transition: opacity 1.6s var(--suave);
+}
+.hero__slide.is-active {
+  opacity: 1;
+  /* AQUI está o "efeito vídeo": zoom lento e contínuo de 14s (técnica Ken
+     Burns, dos documentários). O olho lê como movimento de câmera. */
+  animation: kenburns 14s ease-out forwards;
+}
+@keyframes kenburns {
+  from { transform: scale(1.02) translate3d(0, 0, 0); }
+  to   { transform: scale(1.16) translate3d(-1.5%, -1.5%, 0); }
+}
+
+/* Véu escuro: sem ele, texto branco sobre foto de praia clara fica ilegível */
+.hero__veu {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to top, var(--carvao) 2%, rgba(18,16,14,.74) 32%, rgba(18,16,14,.15) 62%, rgba(18,16,14,.55) 100%),
+    radial-gradient(120% 90% at 50% 50%, transparent 40%, rgba(18,16,14,.6) 100%);
+}
+
+/* Brilho de sol no canto: amarra a foto à cor da marca */
+.hero__sol {
+  position: absolute;
+  top: -18%; right: -12%;
+  width: 65vw; height: 65vw;
+  background: radial-gradient(circle, rgba(247,150,51,.42) 0%, rgba(232,80,42,.14) 42%, transparent 70%);
+  filter: blur(20px);
+  animation: pulsar 9s ease-in-out infinite;
+}
+@keyframes pulsar {
+  0%, 100% { opacity: .85; transform: scale(1); }
+  50%      { opacity: 1;   transform: scale(1.08); }
+}
+
+.hero__conteudo { position: relative; z-index: 2; max-width: 62rem; padding-bottom: clamp(2rem, 6vw, 4rem); }
+
+.hero__eyebrow {
+  display: flex; align-items: center; gap: .7rem;
+  font-size: .72rem; letter-spacing: .3em; text-transform: uppercase;
+  color: var(--sol);
+  margin-bottom: 1.6rem;
+}
+.hero__eyebrow .ponto {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--sol);
+  box-shadow: 0 0 0 0 rgba(247,150,51,.7);
+  animation: farol 2.4s infinite;
+}
+@keyframes farol {
+  70%  { box-shadow: 0 0 0 12px rgba(247,150,51,0); }
+  100% { box-shadow: 0 0 0 0 rgba(247,150,51,0); }
+}
+
+/* O teto caiu de 9.5rem para 8rem: em monitor grande as três linhas somavam
+   quase uma tela inteira e empurravam o resto do hero para fora do quadro. */
+.hero__titulo { font-size: clamp(3.2rem, 9vw, 8rem); letter-spacing: -.035em; margin-bottom: 1.6rem; }
+.hero__titulo span { display: block; }
+
+/* "Amor" na manuscrita da logo: a assinatura da marca é a primeira coisa lida */
+.hero__script {
+  font-family: var(--script);
+  font-size: 1.22em;
+  line-height: .85;
+  color: var(--sol);
+  letter-spacing: 0;
+  margin-left: -.03em;
+  text-shadow: 0 8px 40px rgba(247,150,51,.35);
+}
+.hero__linha { font-style: italic; }
+/* Recuo assimétrico: quebra o alinhamento e cria o ritmo diagonal de capa de revista */
+.hero__linha--recuo { margin-left: clamp(1.5rem, 9vw, 8rem); font-style: normal; font-weight: 500; }
+
+.hero__texto {
+  max-width: 36rem;
+  color: var(--neve-suave);
+  font-size: clamp(1rem, .95rem + .35vw, 1.2rem);
+  margin-bottom: 2.4rem;
+}
+
+.hero__botoes { display: flex; flex-wrap: wrap; gap: .9rem; }
+
+.hero__rodape {
+  position: relative; z-index: 2;
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid rgba(247, 241, 233, .14);
+}
+
+.hero__pontos { display: flex; gap: .55rem; }
+.hero__ponto {
+  width: 34px; height: 3px;
+  padding: 0;
+  background: rgba(247, 241, 233, .28);
+  transition: background .4s, width .4s var(--suave);
+}
+.hero__ponto.is-active { background: var(--sol); width: 56px; }
+
+.hero__rolar {
+  font-size: .68rem; letter-spacing: .28em; text-transform: uppercase;
+  color: var(--neve-suave);
+  animation: flutuar 2.6s ease-in-out infinite;
+}
+@keyframes flutuar { 0%,100% { opacity: .5; } 50% { opacity: 1; } }
+
+
+/* ============================================================================
+   6. FAIXA CORRIDA (marquee)
+   ----------------------------------------------------------------------------
+   O trilho contém DOIS grupos idênticos e desliza -50% da própria largura.
+   Ao terminar o primeiro grupo, a posição visual é igual à inicial — o loop
+   parece infinito e sem emenda.
+   ============================================================================ */
+.faixa {
+  background: var(--sol);
+  color: var(--carvao);
+  padding: .85rem 0;
+  overflow: hidden;
+}
+.faixa__trilho { display: flex; width: max-content; animation: correr 34s linear infinite; }
+.faixa__grupo  { display: flex; align-items: center; gap: 2.2rem; padding-right: 2.2rem; }
+.faixa__grupo span {
+  font-size: .76rem; letter-spacing: .24em; text-transform: uppercase; font-weight: 500;
+  white-space: nowrap;
+}
+.faixa__grupo i { font-style: normal; opacity: .5; }
+@keyframes correr { to { transform: translateX(-50%); } }
+
+
+/* ============================================================================
+   8. SEÇÕES — estrutura comum
+   ============================================================================ */
+.secao { padding: var(--respiro) var(--margem); position: relative; }
+
+/* ----------------------------------------------------------------------------
+   TOKENS QUE MUDAM COM O FUNDO
+   Cada seção redefine "o que é texto", "o que é linha", "o que é superfície".
+   Os componentes lá embaixo usam var(--texto-suave) sem saber se estão numa
+   seção clara ou escura — e funcionam nas duas.
+
+   Sem isso, seria preciso escrever `.secao--escura .depoimento { ... }` para
+   CADA componente em CADA fundo: dezenas de regras duplicadas, e um esquecimento
+   vira texto branco em fundo branco. Isso aqui é DRY aplicado a cor.
+   ---------------------------------------------------------------------------- */
+.secao--clara {
+  background: var(--areia);
+  color: var(--tinta);
+  --texto:       var(--tinta);
+  --texto-suave: var(--tinta-suave);
+  --linha:       rgba(25, 20, 16, .16);
+  --superficie:  rgba(255, 255, 255, .55);
+  --realce:      var(--coral);
+}
+.secao--escura {
+  background: var(--carvao-2);
+  color: var(--neve);
+  --texto:       var(--neve);
+  --texto-suave: var(--neve-suave);
+  --linha:       rgba(247, 241, 233, .16);
+  --superficie:  rgba(247, 241, 233, .05);
+  --realce:      var(--sol);
+}
+
+.secao__cabeca { max-width: 44rem; margin-bottom: clamp(2.5rem, 5vw, 4.5rem); }
+
+.secao__eyebrow {
+  font-size: .7rem; letter-spacing: .3em; text-transform: uppercase;
+  color: var(--realce);
+  margin-bottom: 1.1rem;
+}
+
+.secao__titulo { font-size: clamp(2.3rem, 5.2vw, 4.4rem); letter-spacing: -.03em; margin-bottom: 1.3rem; }
+/* O ponto final laranja: detalhe minúsculo que assina a marca em cada título */
+.secao__ponto { color: var(--realce); }
+
+.secao__texto { color: var(--texto-suave); max-width: 34rem; }
+
+
+/* ---------------------------------------------------------------------------
+   COLEÇÃO
+   auto-fit + minmax = grade responsiva sem media query: o navegador encaixa
+   quantas colunas couberem, com no mínimo 250px cada.
+   --------------------------------------------------------------------------- */
+.grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: clamp(1.2rem, 2.4vw, 2.2rem);
+}
+
+/* O card usa os tokens da seção, então funciona igual no fundo claro da
+   coleção e no fundo escuro dos acessórios — sem uma linha de CSS extra. */
+.produto {
+  display: flex;
+  flex-direction: column;
+  background: var(--superficie);
+  border: 1px solid var(--linha);
+  border-radius: 4px;
+  overflow: hidden;
+  transition: transform .5s var(--suave), box-shadow .5s var(--suave), border-color .4s;
+}
+.produto:hover {
+  transform: translateY(-6px);
+  border-color: var(--realce);
+  box-shadow: 0 22px 50px rgba(0,0,0,.18);
+}
+
+.produto__foto {
+  position: relative;
+  aspect-ratio: 3 / 4;         /* todos os cards com a mesma altura, mesmo com
+                                  fotos de proporções diferentes */
+  overflow: hidden;
+  background: var(--areia-2);
+}
+.produto__foto img {
+  width: 100%; height: 100%;
+  object-fit: cover;           /* preenche o quadro sem distorcer a foto */
+  transition: transform 1.1s var(--suave);
+}
+.produto:hover .produto__foto img { transform: scale(1.06); }
+
+.produto__selo {
+  position: absolute; top: .9rem; left: .9rem;
+  background: var(--coral); color: var(--areia);
+  font-size: .58rem; letter-spacing: .16em; text-transform: uppercase;
+  padding: .38rem .8rem;
+  border-radius: 999px;
+  z-index: 2;
+}
+.produto__selo--novo     { background: var(--sol); color: var(--carvao); }
+.produto__selo--classico { background: var(--carvao); color: var(--areia); }
+
+.produto__info {
+  display: flex;
+  flex-direction: column;
+  gap: .7rem;
+  padding: 1.1rem 1.1rem 1.2rem;
+  flex: 1;                     /* faz todos os cards da linha terminarem juntos */
+}
+.produto__info h3 { font-size: 1.55rem; font-style: italic; line-height: 1; }
+.produto__desc { font-size: .82rem; color: var(--texto-suave); }
+
+/* ---------------------------------------------------------------------------
+   SELETOR DE OPÇÕES (tamanho OU cor)
+   A escolha feita aqui entra na mensagem do WhatsApp. Isso tira a pergunta
+   "qual tamanho/cor você quer?" da conversa — menos ida e volta, mais venda.
+
+   O componente é genérico de propósito: o biquíni usa para P/M/G/GG e o boné
+   usa para as cores. Um só componente atendendo os dois casos, em vez de
+   escrever "seletor de cor" duplicando tudo (DRY).
+   --------------------------------------------------------------------------- */
+.produto__opcoes { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: auto; }
+.opcao {
+  flex: 1 1 auto;
+  padding: .48rem .6rem;
+  border: 1px solid var(--linha);
+  border-radius: 3px;
+  font-size: .74rem;
+  font-weight: 500;
+  letter-spacing: .04em;
+  white-space: nowrap;
+  color: var(--texto-suave);
+  transition: background .25s, color .25s, border-color .25s;
+}
+.opcao:hover { border-color: var(--realce); color: var(--realce); }
+/* O selecionado inverte fundo e texto — não depende só de cor para se
+   distinguir, então continua legível para quem não enxerga bem contraste. */
+.opcao.is-ativo {
+  background: var(--realce);
+  border-color: var(--realce);
+  color: var(--areia);
+}
+
+.produto__precos { display: flex; flex-direction: column; }
+.produto__preco  { font-family: var(--display); font-size: 1.5rem; letter-spacing: .01em; color: var(--texto); }
+.produto__parcela{ font-size: .72rem; color: var(--texto-suave); }
+
+/* CTA do card, na cor do WhatsApp: quem olha já sabe onde vai cair */
+.produto__cta {
+  display: flex; align-items: center; justify-content: center; gap: .5rem;
+  padding: .85rem;
+  background: var(--zap);
+  color: #06301A;
+  border-radius: 999px;
+  font-size: .72rem; font-weight: 500; letter-spacing: .14em; text-transform: uppercase;
+  transition: background .3s, transform .3s var(--suave), box-shadow .3s;
+}
+.produto__cta:hover {
+  background: #2EE873;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(37,211,102,.34);
+}
+
+.colecao__saida {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+  gap: 1.2rem;
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+  padding-top: clamp(2rem, 4vw, 3rem);
+  border-top: 1px solid var(--linha);
+  text-align: center;
+}
+.colecao__saida p { color: var(--texto-suave); }
+.colecao__saida strong { color: var(--texto); font-weight: 500; }
+
+
+/* ---------------------------------------------------------------------------
+   BANNER DE NICHO
+   --------------------------------------------------------------------------- */
+.banner {
+  position: relative;
+  min-height: clamp(26rem, 62vh, 40rem);
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: var(--respiro) var(--margem);
+  overflow: hidden;
+}
+/* A foto é elemento próprio (e não background da seção) porque o JS a desloca
+   no scroll para criar profundidade — efeito parallax. */
+.banner__foto {
+  position: absolute;
+  inset: -12% 0;                 /* sobra em cima e embaixo para ter o que mover */
+  background: url('assets/banner-noronha.jpeg') center 40%/cover no-repeat;
+  will-change: transform;
+}
+.banner__veu { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(18,16,14,.55), rgba(18,16,14,.72)); }
+.banner__conteudo { position: relative; z-index: 2; max-width: 46rem; }
+.banner__eyebrow { font-size: .7rem; letter-spacing: .32em; text-transform: uppercase; color: var(--sol); margin-bottom: 1.2rem; }
+.banner__titulo  { font-size: clamp(2.4rem, 6.5vw, 5.2rem); letter-spacing: -.03em; margin-bottom: 1.4rem; }
+.banner__script  { font-family: var(--script); font-size: 1.18em; color: var(--sol-claro); letter-spacing: 0; }
+.banner__texto   { color: var(--neve-suave); max-width: 32rem; margin-inline: auto; }
+
+
+/* ---------------------------------------------------------------------------
+   GUIA DE MEDIDAS
+   Tabela + instruções lado a lado. A tabela recebe o peso visual porque é o
+   que a cliente veio buscar; as instruções apoiam.
+   --------------------------------------------------------------------------- */
+.medidas__grade {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: clamp(1.8rem, 4vw, 3.5rem);
+  align-items: start;
+}
+
+/* Container que rola sozinho: numa tela estreita a tabela desliza na
+   horizontal em vez de espremer as colunas até o texto quebrar letra a letra.
+   Regra geral: conteúdo largo (tabela, código, gráfico) rola DENTRO da própria
+   caixa — a página nunca deve rolar de lado. */
+.medidas__tabela-area { overflow-x: auto; }
+
+.medidas__tabela {
+  width: 100%;
+  min-width: 22rem;
+  border-collapse: collapse;
+  /* tabular-nums força todos os dígitos com a mesma largura, então as colunas
+     de números ficam alinhadas verticalmente como numa planilha. */
+  font-variant-numeric: tabular-nums;
+}
+.medidas__tabela th,
+.medidas__tabela td {
+  padding: .95rem .8rem;
+  text-align: center;
+  border-bottom: 1px solid var(--linha);
+}
+.medidas__tabela thead th {
+  font-family: var(--corpo);
+  font-size: .68rem;
+  font-weight: 500;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--realce);
+  border-bottom-color: var(--realce);
+}
+/* A coluna do tamanho é o "índice" da linha: ganha destaque tipográfico */
+.medidas__tabela tbody th {
+  font-family: var(--display);
+  font-size: 1.35rem;
+  font-weight: 400;
+  color: var(--texto);
+  text-align: left;
+  padding-left: 0;
+}
+.medidas__tabela tbody td { color: var(--texto-suave); font-size: .95rem; }
+.medidas__tabela tbody tr { transition: background .3s; }
+.medidas__tabela tbody tr:hover { background: var(--superficie); }
+
+.medidas__nota {
+  margin-top: .9rem;
+  font-size: .72rem;
+  letter-spacing: .1em;
+  color: var(--texto-suave);
+}
+
+.medidas__ajuda h3 {
+  font-size: 1.5rem;
+  font-style: italic;
+  margin-bottom: 1.1rem;
+}
+.medidas__passos {
+  list-style: none;              /* trocamos o marcador padrão pelo número
+                                    desenhado no ::before, com a cor da marca */
+  counter-reset: passo;
+  display: flex;
+  flex-direction: column;
+  gap: .8rem;
+  margin-bottom: 1.6rem;
+}
+/* O número fica em posição absoluta e o texto ganha recuo — assim o conteúdo
+   do <li> continua sendo UM parágrafo que flui normalmente.
+   (Com `display:grid` aqui, cada filho do <li> virava uma célula: o <strong>
+   ocupava a coluna do texto e o resto da frase caía na coluna do número, com
+   1.6rem de largura — quebrando letra a letra.) */
+.medidas__passos li {
+  counter-increment: passo;
+  position: relative;
+  padding-left: 1.9rem;
+  font-size: .92rem;
+  color: var(--texto-suave);
+}
+.medidas__passos li::before {
+  content: counter(passo);
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-family: var(--display);
+  font-size: 1.05rem;
+  color: var(--realce);
+  line-height: 1.45;
+}
+.medidas__passos strong { color: var(--texto); font-weight: 500; }
+
+/* Caixa de destaque com a barra lateral na cor da marca: informação que
+   resolve um problema real (tamanhos diferentes em cima e embaixo). */
+.medidas__dica {
+  padding: 1rem 1.2rem;
+  margin-bottom: 1.6rem;
+  background: var(--superficie);
+  border-left: 3px solid var(--realce);
+  border-radius: 0 3px 3px 0;
+  font-size: .9rem;
+  color: var(--texto-suave);
+}
+.medidas__dica strong { display: block; color: var(--texto); font-weight: 500; margin-bottom: .2rem; }
+
+.medidas__aviso {
+  margin-top: 1rem;
+  font-size: .72rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--texto-suave);
+}
+
+/* Some da tela, mas continua sendo lido por leitores de tela.
+   Usado no <caption> da tabela, que descreve o conteúdo para quem não vê. */
+.visualmente-oculto {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+
+/* ---------------------------------------------------------------------------
+   ACESSÓRIOS
+   Duas colunas: foto de contexto (o boné sendo usado) + o card de compra.
+   A foto vem primeiro porque vender acessório é vender o look, não a peça.
+   --------------------------------------------------------------------------- */
+.acessorios__grade {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: clamp(1.5rem, 4vw, 3rem);
+  align-items: start;
+}
+
+.acessorios__lifestyle { position: relative; overflow: hidden; border-radius: 4px; }
+.acessorios__lifestyle img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  transition: transform 1.2s var(--suave);
+}
+.acessorios__lifestyle:hover img { transform: scale(1.04); }
+
+/* Legenda sobre a foto, no rodapé, com véu para garantir leitura */
+.acessorios__lifestyle figcaption {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  padding: 2.5rem 1.2rem 1rem;
+  background: linear-gradient(to top, rgba(18,16,14,.85), transparent);
+  font-size: .68rem; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--neve-suave);
+}
+
+/* ---------------------------------------------------------------------------
+   DEPOIMENTOS
+   --------------------------------------------------------------------------- */
+.depoimentos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: clamp(1.2rem, 2.5vw, 2rem);
+}
+.depoimento {
+  display: flex;
+  flex-direction: column;
+  gap: .9rem;
+  padding: 1.8rem;
+  background: var(--superficie);
+  border: 1px solid var(--linha);
+  border-radius: 4px;
+  transition: border-color .4s, transform .5s var(--suave);
+}
+.depoimento:hover { border-color: var(--realce); transform: translateY(-4px); }
+
+.depoimento__estrelas { display: flex; gap: .18rem; color: var(--sol); }
+.depoimento__estrelas svg { width: 15px; height: 15px; }
+
+.depoimento blockquote {
+  font-family: var(--display);
+  font-size: 1.12rem;
+  font-style: italic;
+  line-height: 1.45;
+  color: var(--texto);
+}
+.depoimento figcaption {
+  font-size: .72rem; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--texto-suave);
+  margin-top: auto;
+}
+
+
+/* ---------------------------------------------------------------------------
+   A MARCA — assimétrico de propósito (foto menor que o texto)
+   --------------------------------------------------------------------------- */
+.marca {
+  display: grid;
+  grid-template-columns: minmax(0, .85fr) minmax(0, 1fr);
+  gap: clamp(2rem, 6vw, 5.5rem);
+  align-items: center;
+}
+.marca__foto { position: relative; }
+.marca__foto img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 3px; }
+
+/* Etiqueta girada apoiada na quina: quebra o retângulo e dá ar de colagem */
+.marca__etiqueta {
+  position: absolute;
+  right: -.6rem; bottom: 1.8rem;
+  background: var(--sol);
+  color: var(--carvao);
+  font-size: .64rem; letter-spacing: .22em; text-transform: uppercase;
+  padding: .5rem 1.1rem;
+  transform: rotate(-90deg);
+  transform-origin: right bottom;
+  white-space: nowrap;
+}
+
+.marca__texto p { color: var(--texto-suave); margin-bottom: 1.1rem; max-width: 34rem; }
+.marca__assinatura {
+  font-family: var(--script);
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  color: var(--realce);
+  line-height: 1;
+  margin: 1.8rem 0 2.2rem !important;
+}
+.marca__numeros {
+  display: flex; flex-wrap: wrap; gap: clamp(1.5rem, 4vw, 3.5rem);
+  padding-top: 1.8rem;
+  border-top: 1px solid var(--linha);
+}
+.marca__numeros strong {
+  display: block;
+  font-family: var(--display);
+  font-size: clamp(1.7rem, 3vw, 2.3rem);
+  font-weight: 400;
+  color: var(--texto);
+}
+.marca__numeros span { font-size: .7rem; letter-spacing: .16em; text-transform: uppercase; color: var(--texto-suave); }
+
+
+/* ---------------------------------------------------------------------------
+   ENTREGAS
+   --------------------------------------------------------------------------- */
+.entregas__grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  align-items: start;
+}
+.entrega {
+  padding-top: 1.6rem;
+  border-top: 1px solid var(--linha);
+  transition: border-color .4s;
+}
+.entrega:hover { border-top-color: var(--realce); }
+.entrega h3 { font-size: 1.5rem; font-style: italic; margin-bottom: .6rem; }
+.entrega p  { font-size: .9rem; color: var(--texto-suave); }
+.entrega strong { color: var(--texto); font-weight: 500; }
+.entregas__foto img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 3px; }
+
+
+/* ---------------------------------------------------------------------------
+   CHAMADA FINAL
+   --------------------------------------------------------------------------- */
+.chamada {
+  position: relative;
+  padding: var(--respiro) var(--margem);
+  text-align: center;
+  background: radial-gradient(70% 100% at 50% 0%, rgba(247,150,51,.16), transparent 65%), var(--carvao);
+  overflow: hidden;
+}
+.chamada__conteudo { position: relative; z-index: 2; max-width: 44rem; margin-inline: auto; }
+/* O wordmark da chamada final é centralizado; como .marca-nome é inline-flex,
+   quem centraliza é o container, não o próprio elemento. */
+.chamada__conteudo .marca-nome--grande { display: flex; justify-content: center; }
+.chamada__titulo { font-size: clamp(2rem, 5vw, 3.6rem); letter-spacing: -.025em; margin-bottom: 1.2rem; }
+.chamada__script { font-family: var(--script); font-size: 1.2em; color: var(--sol); letter-spacing: 0; }
+.chamada__texto  { color: var(--neve-suave); max-width: 30rem; margin: 0 auto 2.2rem; }
+.chamada__aviso  {
+  margin-top: 1.2rem;
+  font-size: .72rem; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--neve-suave);
+}
+
+
+/* ============================================================================
+   9. RODAPÉ E BARRA FLUTUANTE
+   ============================================================================ */
+.rodape {
+  background: var(--carvao);
+  padding: clamp(3rem, 6vw, 4.5rem) var(--margem) 2rem;
+  border-top: 1px solid rgba(247, 241, 233, .1);
+}
+.rodape__topo { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2.5rem; padding-bottom: 2.5rem; }
+.rodape__marca p { color: var(--neve-suave); font-size: .88rem; }
+/* O wordmark é <p> também, mas não herda a cor apagada do texto ao lado */
+.rodape__marca .marca-nome { color: var(--sol); }
+
+.rodape__links { display: flex; gap: clamp(2rem, 6vw, 5rem); }
+.rodape__links h4 {
+  font-family: var(--corpo);
+  font-size: .68rem; letter-spacing: .24em; text-transform: uppercase;
+  color: var(--sol);
+  margin-bottom: 1rem;
+}
+.rodape__links a {
+  display: block;
+  font-size: .88rem;
+  color: var(--neve-suave);
+  padding: .2rem 0;
+  transition: color .3s, padding-left .35s var(--suave);
+}
+.rodape__links a:hover { color: var(--neve); padding-left: .4rem; }
+
+.rodape__base {
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: .8rem;
+  padding-top: 1.8rem;
+  border-top: 1px solid rgba(247, 241, 233, .1);
+  font-size: .72rem; letter-spacing: .1em;
+  color: rgba(247, 241, 233, .4);
+  /* Folga embaixo para o botão flutuante não encostar no texto do rodapé */
+  padding-bottom: 3.5rem;
+}
+
+/* ---------------------------------------------------------------------------
+   BOTÃO FLUTUANTE DO WHATSAPP (FAB)
+   Só o círculo verde com o ícone, pulsando. Sem texto, sem caixa — a cor e o
+   ícone do WhatsApp já dizem tudo, e o botão não briga com o conteúdo.
+   --------------------------------------------------------------------------- */
+.zap-fab {
+  position: fixed;
+  right: clamp(1rem, 3vw, 2rem);
+  bottom: clamp(1rem, 3vw, 2rem);
+  z-index: 95;
+  display: grid;
+  place-items: center;          /* centraliza o ícone nos dois eixos, em 1 linha */
+  width: 58px;
+  height: 58px;
+  background: var(--zap);
+  color: #06301A;
+  border-radius: 50%;
+  box-shadow: 0 12px 30px rgba(0,0,0,.42), 0 0 0 1px rgba(255,255,255,.14) inset;
+  /* Nasce escondido e sobe deslizando quando o usuário passa do hero */
+  opacity: 0;
+  transform: translateY(150%);
+  pointer-events: none;
+  transition: transform .6s var(--suave), opacity .45s, background .3s;
+}
+.zap-fab.is-visivel { opacity: 1; transform: none; pointer-events: auto; }
+.zap-fab:hover      { background: #2EE873; transform: scale(1.08); }
+
+.zap-fab svg { width: 30px; height: 30px; }
+
+/* Anel que pulsa saindo de trás do botão — chama o olho sem piscar nem gritar.
+   Fica ATRÁS (z-index -1) e não recebe cliques, senão roubaria o toque. */
+.zap-fab__anel {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--zap);
+  z-index: -1;
+  pointer-events: none;
+  animation: anel 2.4s var(--suave) infinite;
+}
+@keyframes anel {
+  0%        { transform: scale(1);   opacity: .6; }
+  70%, 100% { transform: scale(1.7); opacity: 0; }
+}
+
+
+/* ============================================================================
+   10. RESPONSIVO
+   Breakpoints do maior para o menor.
+   ============================================================================ */
+
+/* Tablet: a seção da marca vira coluna única */
+@media (max-width: 900px) {
+  .marca { grid-template-columns: 1fr; }
+  .marca__foto { max-width: 26rem; }
+}
+
+/* Celular */
+@media (max-width: 720px) {
+
+  /* Menu vira painel deslizante vindo de cima */
+  .cabecalho__nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.8rem;
+    height: 100svh;
+    background: rgba(18, 16, 14, .97);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    transform: translateY(-100%);
+    transition: transform .6s var(--suave);
+    z-index: -1;                          /* atrás da barra do cabeçalho */
+  }
+  .cabecalho__nav.is-open { transform: none; }
+  .cabecalho__nav a { font-size: 1.05rem; letter-spacing: .22em; }
+
+  .cabecalho__menu-btn { display: flex; }
+  .cabecalho__acoes .botao { display: none; }   /* o CTA do topo sai; sobra a barra */
+
+  .hero__rodape { flex-direction: column; align-items: flex-start; gap: .9rem; }
+  .hero__linha--recuo { margin-left: 1.2rem; }
+  .hero__botoes .botao { flex: 1 1 100%; }
+
+  /* O espaçamento entre letras que dá ar editorial no desktop faz a frase
+     quebrar em duas linhas no celular, e a bolinha fica boiando no meio.
+     Aqui ela é apertada só o suficiente para caber numa linha só. */
+  .hero__eyebrow { font-size: .64rem; letter-spacing: .16em; }
+
+  /* ---------------------------------------------------------------------------
+     ACESSÓRIOS NO CELULAR — de duas colunas para uma.
+     As duas colunas lado a lado sobravam ~170px cada: o nome do produto
+     quebrava em três linhas, os botões de cor empilhavam um por linha e a
+     legenda cobria a foto. Empilhado, cada bloco usa a largura inteira.
+     --------------------------------------------------------------------------- */
+  .acessorios__grade { grid-template-columns: 1fr; }
+
+  /* Guia de medidas: tabela em cima, instruções embaixo */
+  .medidas__grade { grid-template-columns: 1fr; }
+
+  /* A foto vira panorâmica: em pé (4/5) ela empurraria o card de compra
+     para muito abaixo da dobra. */
+  .acessorios__lifestyle img { aspect-ratio: 3 / 2; }
+  .acessorios__lifestyle figcaption { font-size: .6rem; letter-spacing: .14em; padding: 2rem 1rem .9rem; }
+
+  .rodape__topo { flex-direction: column; }
+
+  /* ---------------------------------------------------------------------------
+     BOTÃO DO WHATSAPP NO CELULAR — visível desde o primeiro instante.
+     No desktop ele só entra depois do hero, para não competir com o CTA
+     principal. No celular a lógica se inverte: a tela é pequena, o botão fica
+     no canto sem atrapalhar nada, e a compra acontece justamente ali. Deixá-lo
+     escondido até 70% de rolagem era perder quem desiste antes disso.
+
+     Sem !important: estas regras vêm depois no arquivo e a versão .is-visivel
+     também deixa o botão visível — nos dois estados ele aparece.
+     --------------------------------------------------------------------------- */
+  .zap-fab {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+    width: 62px;
+    height: 62px;
+    right: 1rem;
+    /* env(safe-area-inset-bottom) é a folga do iPhone com barra de gestos.
+       Sem isso o botão fica embaixo da barrinha e o toque não registra. */
+    bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+  }
+  .zap-fab svg { width: 32px; height: 32px; }
+}
