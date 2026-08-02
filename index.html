@@ -149,11 +149,14 @@
   <div class="hero__veu" aria-hidden="true"></div>
   <div class="hero__sol" aria-hidden="true"></div>
 
-  <div class="hero__conteudo">
-    <p class="hero__eyebrow">
-      <span class="ponto"></span> Do Rio de Janeiro para todo o Brasil
-    </p>
+  <!-- Fica no TOPO do hero, logo abaixo do cabeçalho — e não junto do título.
+       Como o hero é flex em coluna, o `margin-bottom: auto` do CSS absorve
+       todo o espaço livre e empurra o resto do conteúdo para a base. -->
+  <p class="hero__eyebrow">
+    <span class="ponto"></span> Do Rio de Janeiro para todo o Brasil
+  </p>
 
+  <div class="hero__conteudo">
     <!-- O h1 é a própria bio do Instagram: frase da marca, já testada -->
     <h1 class="hero__titulo">
       <span class="hero__script">Amor</span>

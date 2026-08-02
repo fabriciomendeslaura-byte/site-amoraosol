@@ -451,10 +451,18 @@ h1, h2, h3, h4 { font-family: var(--display); font-weight: 400; line-height: 1.0
 .hero__conteudo { position: relative; z-index: 2; max-width: 62rem; padding-bottom: clamp(2rem, 6vw, 4rem); }
 
 .hero__eyebrow {
+  position: relative;
+  z-index: 2;                  /* acima do véu escuro e do brilho de sol */
   display: flex; align-items: center; gap: .7rem;
   font-size: .72rem; letter-spacing: .3em; text-transform: uppercase;
   color: var(--sol);
-  margin-bottom: 1.6rem;
+
+  /* O TRUQUE QUE POSICIONA TUDO:
+     num container flex, `margin: auto` engole todo o espaço sobrando daquele
+     lado. Com `margin-bottom: auto`, esta frase é empurrada para o topo do
+     hero e o título e o rodapé descem para a base — sem `position: absolute`,
+     sem cálculo de altura, e continua funcionando em qualquer tela. */
+  margin-bottom: auto;
 }
 .hero__eyebrow .ponto {
   width: 7px; height: 7px; border-radius: 50%;
