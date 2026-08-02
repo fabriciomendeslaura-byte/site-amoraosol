@@ -74,6 +74,9 @@ $receita = @{
     'hero-por-do-sol.jpeg'       = @{ w = 1100; q = 64 }
     'hero-praia-rio.jpeg'        = @{ w = 1100; q = 64 }
     'banner-noronha.jpeg'        = @{ w = 1100; q = 64 }
+    # Banners de colecao: aparecem lado a lado, entao ~900px cobre bem
+    'banner-categoria-biquinis.png' = @{ w = 900; q = 70 }
+    'banner-categoria-saidas.png'   = @{ w = 900; q = 70 }
     # Cards e blocos menores: 700px ja cobre ate tela retina
     'banner-bone-praia.jpeg'     = @{ w = 700;  q = 68 }
     'bones.jpeg'                 = @{ w = 700;  q = 68 }

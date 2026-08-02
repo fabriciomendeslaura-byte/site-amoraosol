@@ -13,15 +13,17 @@ preview-amor-ao-sol.html
 moldura-*.html
 teste-*.html
 
-# Fotos originais soltas na raiz, como vieram do WhatsApp e do Instagram.
-# As versões usadas pelo site vivem em assets/ com nome semântico e ESSAS sim
-# são versionadas.
-[0-9].jpeg
-[0-9][0-9].jpeg
-WhatsApp Image*.jpeg
-imagem logo.jpeg
-IMAGEM PRINT*.jpeg
-ewwefw.jpeg
+# Imagens soltas na RAIZ: originais do WhatsApp/Instagram, prints de
+# referência, rascunhos. Só entram no repositório depois de tratadas e
+# renomeadas dentro de assets/.
+#
+# A barra no início prende o padrão à raiz — sem ela, o Git ignoraria também
+# as imagens de assets/, que são justamente as que o site usa.
+/*.jpeg
+/*.jpg
+/*.png
+/*.webp
+/*.gif
 
 # Sistema operacional / editor
 Thumbs.db

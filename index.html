@@ -105,7 +105,8 @@
   </a>
 
   <nav class="cabecalho__nav" id="menu">
-    <a href="#colecao">Coleção</a>
+    <a href="#biquinis">Biquínis</a>
+    <a href="#saidas">Saídas</a>
     <a href="#acessorios">Acessórios</a>
     <a href="#marca">A marca</a>
     <a href="#entregas">Entregas</a>
@@ -170,7 +171,7 @@
         <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#ico-whatsapp"/></svg>
         Comprar pelo WhatsApp
       </a>
-      <a href="#colecao" class="botao botao--vazado botao--grande">Ver a coleção</a>
+      <a href="#colecoes" class="botao botao--vazado botao--grande">Ver a coleção</a>
     </div>
   </div>
 
@@ -183,6 +184,35 @@
     </div>
     <span class="hero__rolar">role para descobrir</span>
   </div>
+</section>
+
+
+<!-- ==========================================================================
+     COLEÇÕES — as duas portas de entrada do catálogo
+     --------------------------------------------------------------------------
+     Vêm logo depois do hero porque é a primeira decisão da visitante:
+     "vim atrás de biquíni ou de saída de praia?". Responder isso cedo encurta
+     o caminho até o produto.
+
+     As imagens já trazem o nome da categoria embutido, então não repetimos o
+     texto por cima — só o "ver coleção" no hover, que sinaliza o clique.
+     O <a> envolve o banner inteiro: a área de toque é o cartão todo, não um
+     link pequeno (regra de ouro para o dedo no celular).
+     ========================================================================== -->
+<section class="colecoes" id="colecoes" aria-label="Coleções">
+
+  <a href="#biquinis" class="colecao-banner revelar">
+    <img src="assets/banner-categoria-biquinis.png"
+         alt="Coleção de biquínis — modelo em biquíni marrom" loading="lazy">
+    <span class="colecao-banner__cta" aria-hidden="true">Ver coleção</span>
+  </a>
+
+  <a href="#saidas" class="colecao-banner revelar">
+    <img src="assets/banner-categoria-saidas.png"
+         alt="Coleção de saídas de praia — modelo em vestido estampado" loading="lazy">
+    <span class="colecao-banner__cta" aria-hidden="true">Ver coleção</span>
+  </a>
+
 </section>
 
 
@@ -224,9 +254,9 @@
      individualmente para que nenhuma peça fique cortada — é o que faz a grade
      parecer um catálogo, e não um álbum bagunçado.
      ========================================================================== -->
-<section class="secao secao--clara" id="colecao">
+<section class="secao secao--clara" id="biquinis">
   <div class="secao__cabeca revelar">
-    <p class="secao__eyebrow">Coleção Verão</p>
+    <p class="secao__eyebrow">Coleção · Biquínis</p>
     <h2 class="secao__titulo">Cada peça leva o nome<br>de uma praia<span class="secao__ponto">.</span></h2>
     <p class="secao__texto">
       Produção pequena e autoral. Escolha o seu tamanho e chame no WhatsApp —
@@ -443,6 +473,92 @@
 
 
 <!-- ==========================================================================
+     COLEÇÃO — SAÍDAS DE PRAIA
+     --------------------------------------------------------------------------
+     Segunda coleção, alvo do banner "Saídas de praia" lá em cima.
+     Fica logo depois dos biquínis porque é a venda casada natural: quem
+     acabou de escolher o biquíni é quem compra a saída.
+
+     ATENÇÃO — CONTEÚDO PROVISÓRIO: só temos duas fotos de saída de praia no
+     material enviado. Nomes, preços e descrições são exemplos. Assim que
+     chegarem as fotos e os dados reais das peças, é só duplicar um <article>
+     e trocar o conteúdo — a estrutura já está pronta.
+     ========================================================================== -->
+<section class="secao secao--escura" id="saidas">
+  <div class="secao__cabeca revelar">
+    <p class="secao__eyebrow">Coleção · Saídas de praia</p>
+    <h2 class="secao__titulo">Do mar para o quiosque<br>sem trocar de roupa<span class="secao__ponto">.</span></h2>
+    <p class="secao__texto">
+      Peças leves que secam rápido e cabem na bolsa de praia — para sair da
+      água e continuar o dia sem parecer que veio da areia.
+    </p>
+  </div>
+
+  <div class="grade">
+
+    <article class="produto revelar" data-nome="Saída Cavalo Marinho" data-preco="259">
+      <div class="produto__foto">
+        <img src="assets/banner-categoria-saidas.png" alt="Saída de praia Cavalo Marinho: vestido longo estampado" loading="lazy" style="object-position:center 30%">
+        <span class="produto__selo produto__selo--novo">Novidade</span>
+      </div>
+      <div class="produto__info">
+        <h3>Cavalo Marinho</h3>
+        <p class="produto__desc">Vestido longo estampado · alça removível</p>
+        <div class="produto__opcoes" data-rotulo="no tamanho" role="group" aria-label="Tamanho da saída Cavalo Marinho">
+          <button class="opcao is-ativo">P</button>
+          <button class="opcao">M</button>
+          <button class="opcao">G</button>
+          <button class="opcao">GG</button>
+        </div>
+        <div class="produto__precos">
+          <span class="produto__preco">R$ 259</span>
+          <span class="produto__parcela">3x de R$ 86 sem juros</span>
+        </div>
+        <a href="#" class="produto__cta zap">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#ico-whatsapp"/></svg>
+          Quero essa
+        </a>
+      </div>
+    </article>
+
+    <article class="produto revelar" data-nome="Saída Ondina" data-preco="189">
+      <div class="produto__foto">
+        <img src="assets/produto-branco.jpeg" alt="Saída de praia Ondina: camisa leve rosa aberta" loading="lazy" style="object-position:center 42%">
+      </div>
+      <div class="produto__info">
+        <h3>Ondina</h3>
+        <p class="produto__desc">Camisa leve de viscose · manga curta</p>
+        <div class="produto__opcoes" data-rotulo="no tamanho" role="group" aria-label="Tamanho da saída Ondina">
+          <button class="opcao is-ativo">P</button>
+          <button class="opcao">M</button>
+          <button class="opcao">G</button>
+          <button class="opcao">GG</button>
+        </div>
+        <div class="produto__precos">
+          <span class="produto__preco">R$ 189</span>
+          <span class="produto__parcela">3x de R$ 63 sem juros</span>
+        </div>
+        <a href="#" class="produto__cta zap">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#ico-whatsapp"/></svg>
+          Quero essa
+        </a>
+      </div>
+    </article>
+
+  </div>
+
+  <div class="colecao__saida revelar">
+    <p>As saídas saem em <strong>produção pequena</strong> e cada estampa vem em poucas peças.</p>
+    <a href="#" class="botao botao--zap zap"
+       data-mensagem="Oi! Queria ver as saídas de praia disponíveis 🧡 Quais estampas vocês têm agora?">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#ico-whatsapp"/></svg>
+      Ver estampas disponíveis
+    </a>
+  </div>
+</section>
+
+
+<!-- ==========================================================================
      GUIA DE MEDIDAS
      --------------------------------------------------------------------------
      Vem logo depois da coleção porque é exatamente ali que a cliente trava:
@@ -457,7 +573,10 @@
      antes de publicar — tabela errada gera troca, que é justamente o que
      esta seção existe para evitar.
      ========================================================================== -->
-<section class="secao secao--escura medidas" id="medidas">
+<!-- Fundo claro para alternar com a seção de saídas, que é escura. A página
+     inteira segue esse ritmo claro/escuro — duas seções iguais em sequência
+     fariam o olho ler tudo como um bloco só. -->
+<section class="secao secao--clara medidas" id="medidas">
   <div class="secao__cabeca revelar">
     <p class="secao__eyebrow">Guia de medidas</p>
     <h2 class="secao__titulo">Qual é o<br>seu tamanho<span class="secao__ponto">?</span></h2>
@@ -769,10 +888,11 @@
     <nav class="rodape__links" aria-label="Navegação do rodapé">
       <div>
         <h4>Loja</h4>
-        <a href="#colecao">Coleção</a>
+        <a href="#biquinis">Biquínis</a>
+        <a href="#saidas">Saídas de praia</a>
         <a href="#acessorios">Acessórios</a>
+        <a href="#medidas">Guia de medidas</a>
         <a href="#entregas">Entregas</a>
-        <a href="#marca">Sobre a marca</a>
       </div>
       <div>
         <h4>Contato</h4>

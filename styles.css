@@ -520,7 +520,72 @@ h1, h2, h3, h4 { font-family: var(--display); font-weight: 400; line-height: 1.0
 
 
 /* ============================================================================
-   6. FAIXA CORRIDA (marquee)
+   6. BANNERS DE COLEÇÃO
+   ----------------------------------------------------------------------------
+   Duas portas de entrada do catálogo, lado a lado no desktop e empilhadas no
+   celular. Cada banner é um link inteiro — a área clicável é o cartão todo,
+   não um textinho dentro dele.
+   ============================================================================ */
+.colecoes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;                     /* fresta fina: os dois se leem como um par */
+  background: var(--carvao);    /* cor que aparece pela fresta */
+}
+
+.colecao-banner {
+  position: relative;
+  display: block;
+  overflow: hidden;             /* segura o zoom da foto dentro da moldura */
+  background: var(--carvao-2);
+}
+
+/* As duas imagens têm proporções diferentes (2.25:1 e 1.85:1). O aspect-ratio
+   fixo + object-fit:cover força as duas ao MESMO formato: sem isso, uma
+   ficaria mais alta que a outra e o par pareceria desalinhado. */
+.colecao-banner img {
+  width: 100%;
+  aspect-ratio: 2 / 1;
+  object-fit: cover;
+  transition: transform 1.1s var(--suave), filter .5s var(--suave);
+}
+.colecao-banner:hover img { transform: scale(1.04); filter: brightness(1.05); }
+
+/* "Ver coleção" aparece no hover — sinaliza que o banner é clicável.
+   As imagens já trazem o nome da categoria, então não repetimos o texto. */
+.colecao-banner__cta {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(1.2rem, 3vw, 2.2rem);
+  transform: translate(-50%, 12px);
+  padding: .7rem 1.6rem;
+  background: var(--sol);
+  color: var(--carvao);
+  border-radius: 999px;
+  font-size: .68rem;
+  font-weight: 500;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .4s var(--suave), transform .5s var(--suave);
+}
+.colecao-banner:hover .colecao-banner__cta,
+.colecao-banner:focus-visible .colecao-banner__cta {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* No celular não existe hover: o botão fica sempre visível, senão a visitante
+   nunca descobriria que o banner é clicável. */
+@media (hover: none) {
+  .colecao-banner__cta { opacity: 1; transform: translate(-50%, 0); }
+}
+
+
+/* ============================================================================
+   7. FAIXA CORRIDA (marquee)
    ----------------------------------------------------------------------------
    O trilho contém DOIS grupos idênticos e desliza -50% da própria largura.
    Ao terminar o primeiro grupo, a posição visual é igual à inicial — o loop
@@ -1179,6 +1244,12 @@ h1, h2, h3, h4 { font-family: var(--display); font-weight: 400; line-height: 1.0
 
   /* Guia de medidas: tabela em cima, instruções embaixo */
   .medidas__grade { grid-template-columns: 1fr; }
+
+  /* Banners de coleção empilhados. Cada um ocupa a largura toda e fica um
+     pouco mais alto (16/9), porque lado a lado eles ficariam estreitos
+     demais para a modelo aparecer. */
+  .colecoes { grid-template-columns: 1fr; }
+  .colecao-banner img { aspect-ratio: 16 / 9; }
 
   /* A foto vira panorâmica: em pé (4/5) ela empurraria o card de compra
      para muito abaixo da dobra. */
