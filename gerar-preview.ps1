@@ -83,16 +83,11 @@ $receita = @{
     'bones.jpeg'                 = @{ w = 700;  q = 68 }
     'fundadora.jpeg'             = @{ w = 700;  q = 68 }
     'entregas.jpeg'              = @{ w = 700;  q = 68 }
-    # produto-coral.jpeg saiu: o biquini Arpoador foi removido da colecao.
-    # O arquivo continua em assets/ caso a peca volte.
-    'produto-marrom.jpeg'        = @{ w = 700;  q = 68 }
-    'produto-laranja-marrom.jpeg'= @{ w = 700;  q = 68 }
-    'produto-pessego.jpeg'       = @{ w = 700;  q = 68 }
-    'produto-grafite.jpeg'       = @{ w = 700;  q = 68 }
-    'produto-vinho.jpeg'         = @{ w = 700;  q = 68 }
-    'produto-branco.jpeg'        = @{ w = 700;  q = 68 }
-    'hero-mar-azul.jpeg'         = @{ w = 700;  q = 68 }
-    'hero-peixes.jpeg'           = @{ w = 700;  q = 68 }
+
+    # As fotos de produto (produto-*.jpeg, hero-mar-azul, hero-peixes) sairam
+    # da lista: os cards de biquini e de saida agora mostram blocos vazios ate
+    # chegarem as fotos profissionais. Os arquivos seguem em assets/ e e so
+    # devolver a linha aqui quando voltarem a ser usados.
 }
 
 Write-Host "[1/4] Convertendo imagens..."
