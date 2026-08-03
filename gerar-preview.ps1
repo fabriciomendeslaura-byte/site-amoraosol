@@ -71,7 +71,7 @@ $receita = @{
     # Fundo de tela cheia: precisam de mais resolucao.
     # hero-dois-irmaos e hero-pao-de-acucar sairam do carrossel (o hero ficou
     # com 2 slides). Os arquivos seguem em assets/ caso voltem.
-    'hero-por-do-sol.jpeg'       = @{ w = 1100; q = 64 }
+    # hero-por-do-sol saiu: o banner principal ficou com uma foto so.
     'hero-praia-rio.jpeg'        = @{ w = 1100; q = 64 }
     'banner-noronha.jpeg'        = @{ w = 1100; q = 64 }
     # Banners de colecao: fundo liso comprime demais e aparece bandeamento no

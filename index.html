@@ -146,10 +146,13 @@
     <!-- A própria fundadora abre o site: quem vende é ela, e a marca é
          pessoal — o rosto de quem responde o WhatsApp vindo primeiro cria
          a confiança antes de qualquer argumento de venda.
-         A classe is-active marca qual slide começa visível. -->
+
+         Hoje é uma foto só, sem troca automática. A estrutura de carrossel
+         continua de pé: basta duplicar a linha abaixo com outra foto e
+         acrescentar um indicador no rodapé que o rodízio volta a funcionar
+         sozinho — o JS conta quantos slides existem e só liga o timer se
+         houver mais de um. -->
     <div class="hero__slide is-active" style="background-image:url('assets/hero-praia-rio.jpeg'); background-position:center 32%"></div>
-    <!-- Fim de tarde na praia, luz dourada -->
-    <div class="hero__slide" style="background-image:url('assets/hero-por-do-sol.jpeg'); background-position:center 62%"></div>
   </div>
 
   <div class="hero__veu" aria-hidden="true"></div>
@@ -173,12 +176,8 @@
   </div>
 
   <div class="hero__rodape">
-    <!-- Um indicador por slide: sobrando indicador, o usuário clicaria num
-         ponto que não leva a lugar nenhum. -->
-    <div class="hero__pontos" id="hero-pontos">
-      <button class="hero__ponto is-active" data-slide="0" aria-label="Imagem 1"></button>
-      <button class="hero__ponto" data-slide="1" aria-label="Imagem 2"></button>
-    </div>
+    <!-- Sem indicadores: com uma foto só, os pontinhos não levariam a lugar
+         nenhum. Voltam junto com o segundo slide, um por foto. -->
     <span class="hero__rolar">role para descobrir</span>
   </div>
 </section>
