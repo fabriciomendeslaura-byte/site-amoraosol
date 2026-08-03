@@ -60,9 +60,13 @@ function montarMensagem(botao) {
   const rotulo = grupo?.dataset.rotulo ?? '';
   const opcao  = grupo?.querySelector('.opcao.is-ativo')?.textContent.trim() ?? '';
 
-  const escolha = opcao ? ` ${rotulo} *${opcao}*` : '';
+  // Cada pedaço só entra na frase se existir. Peças ainda sem preço definido
+  // (as que estão por chegar) sairiam como "(R$ undefined)" no WhatsApp.
+  const escolha  = opcao ? ` ${rotulo} *${opcao}*` : '';
+  const valor    = preco ? ` (R$ ${preco})` : '';
+  const pergunta = preco ? 'Ainda tem disponível?' : 'Já está disponível?';
 
-  return `Oi! Vi o site e quero *${nome}*${escolha} (R$ ${preco}). Ainda tem disponível? 🧡`;
+  return `Oi! Vi o site e quero *${nome}*${escolha}${valor}. ${pergunta} 🧡`;
 }
 
 function atualizarLink(botao) {

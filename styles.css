@@ -830,20 +830,20 @@ h1, h2, h3, h4 { font-family: var(--display); font-weight: 400; line-height: 1.0
 
 /* ---------------------------------------------------------------------------
    BOTÃO COMPRAR DO CARD
-   Verde do WhatsApp de propósito: a cor já diz para onde o clique leva, antes
-   mesmo de ler o texto. Largura total do card, porque num carrossel o botão
-   é o alvo final — quanto maior a área, menos toque errado no celular.
+   Pílula preta com texto claro. Sem cor de marca e sem ícone: o preto some
+   como "cor" e deixa a FOTO do produto ser a protagonista do card — é o que
+   as lojas de moda fazem. Largura total, porque num carrossel o botão é o
+   alvo final: quanto maior a área, menos toque errado no celular.
    --------------------------------------------------------------------------- */
 .produto__cta {
   position: relative;
-  display: flex; align-items: center; justify-content: center; gap: .55rem;
+  display: flex; align-items: center; justify-content: center;
   padding: .95rem;
-  background: var(--zap);
-  color: #06301A;
+  background: var(--carvao);
+  color: var(--neve);
   border-radius: 999px;
-  font-size: .72rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
+  font-size: .72rem; font-weight: 500; letter-spacing: .16em; text-transform: uppercase;
   overflow: hidden;                 /* segura o brilho dentro da pílula */
-  box-shadow: 0 4px 14px rgba(37, 211, 102, .22);
   transition: background .3s, transform .3s var(--suave), box-shadow .35s;
 }
 
@@ -853,26 +853,57 @@ h1, h2, h3, h4 { font-family: var(--display); font-weight: 400; line-height: 1.0
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,.45) 50%, transparent 65%);
+  background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,.22) 50%, transparent 65%);
   transform: translateX(-120%);
   transition: transform .7s var(--suave);
 }
 .produto__cta:hover::after { transform: translateX(120%); }
 
 .produto__cta:hover {
-  background: #2EE873;
+  background: #000;
   transform: translateY(-2px);
-  box-shadow: 0 12px 30px rgba(37, 211, 102, .4);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, .3);
 }
 /* Afunda ao ser pressionado: devolve a sensação física do clique/toque */
 .produto__cta:active { transform: translateY(0) scale(.98); }
 
-.produto__cta .ico { width: 1.15rem; height: 1.15rem; }
+/* Na seção escura o preto sumiria no fundo: ali o botão inverte para claro. */
+.secao--escura .produto__cta { background: var(--neve); color: var(--carvao); }
+.secao--escura .produto__cta:hover { background: #fff; }
 
-/* O card inteiro reage ao passar o mouse, não só o botão — o cartão todo
-   parece um alvo só, e o botão "acende" antes de a pessoa chegar nele. */
-.produto:hover .produto__cta {
-  box-shadow: 0 10px 26px rgba(37, 211, 102, .34);
+
+/* ---------------------------------------------------------------------------
+   BLOCO DE PRODUTO SEM FOTO
+   Reserva o espaço da peça enquanto a foto não chega. Mostrar a moldura vazia
+   comunica "aqui vão entrar os produtos" — melhor do que esconder a seção e
+   deixar a coleção parecendo inexistente.
+   --------------------------------------------------------------------------- */
+.produto__foto--vazia {
+  display: grid;
+  place-items: center;
+  gap: .5rem;
+  background:
+    repeating-linear-gradient(45deg,
+      transparent, transparent 12px,
+      rgba(127, 127, 127, .05) 12px, rgba(127, 127, 127, .05) 24px);
+  border-bottom: 1px solid var(--linha);
+}
+.produto__foto--vazia span {
+  font-size: .64rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--texto-suave);
+  opacity: .75;
+}
+/* Moldura tracejada: convenção visual de "espaço reservado", a mesma que
+   ferramentas de design usam para caixa de imagem vazia. */
+.produto__foto--vazia::before {
+  content: '';
+  position: absolute;
+  inset: 1rem;
+  border: 1px dashed var(--linha);
+  border-radius: 3px;
+  pointer-events: none;
 }
 
 .colecao__saida {
